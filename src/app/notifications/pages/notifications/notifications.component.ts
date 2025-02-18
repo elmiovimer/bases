@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-notifications',
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
   standalone: false,
 })
 export class NotificationsComponent  implements OnInit {
+
 
   constructor() { }
 

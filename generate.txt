@@ -2,16 +2,16 @@ ionic g m home --routing
 ionic g c home/pages/home --spec=false
 ionic g c home/componentes/article --spec=false
 
-ionic g m shared 
+ionic g m shared
 ionic g c shared/components/header --spec=false
 ionic g c shared/components/footer --spec=false
 
-ionic g m store --routing  
+ionic g m store --routing
 ionic g c store/pages/store --spec=false
 ionic g c store/pages/product --spec=false
 ionic g c store/components/product-detail --spec=false
 
-ionic g m contact --routing 
+ionic g m contact --routing
 ionic g c contact/pages/contact --spec=false
 ionic g c contact/components/form-contact --spec=false
 
@@ -42,3 +42,9 @@ ionic g p shared/pipes/short
 
 //para crear directivas personalizadas
 ionic g d shared/directives/highlight
+
+
+//para generar un guard
+ng generate guard your-guard
+
+ionic g g /shared/guards/isAdmin
