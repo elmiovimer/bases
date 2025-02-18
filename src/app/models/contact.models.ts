@@ -4,3 +4,4 @@ export namespace ModelsContact{
         name : string;
         phone : string;
     }
+}
