@@ -1,0 +1,13 @@
+.cart-content{
+    display: flex;
+    position: sticky;
+    top: 60px;
+    justify-content: end;
+}
+
+.cart-details{
+    background: #FFC107;
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+}

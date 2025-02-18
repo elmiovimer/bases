@@ -1,0 +1,78 @@
+<p>{{error}}</p>
+<div class="content-form">
+  <!-- Email -->
+  <div class="input-content">
+    <label>Email:</label>
+    <input type="mail"[(ngModel)]="form.email" >
+  </div>
+  <!-- name -->
+  <div class="input-content">
+    <label>Name:</label>
+    <input type="text" [(ngModel)]="form.name" >
+  </div>
+  <!-- phone -->
+  <div class="input-content">
+    <label for="">Phone:</label>
+    <input type="text" [(ngModel)]="form.phone">
+  </div>
+  <!-- boton enviar -->
+  <div style="text-align: center">
+    <button (click)="enviar()">Enviar</button>
+
+  </div>
+</div>
+
+<h2 style="text-align: center; padding-top: 10px;">Fomulario Reactivo</h2>
+<div class="content-form">
+  <form [formGroup]="datosForm" (ngSubmit)="enviarForm()">
+    <!-- Email -->
+    <div class="input-content">
+      <label>Email:</label>
+      <input placeholder="Email" formControlName="email" >
+      <!-- dos formas de poner la condicion de requerido -->
+      <span  *ngIf="datosForm.controls['email'].hasError('required')">
+        <i>Este campo es <strong>requerido</strong></i>
+
+      </span>
+
+      @if(datosForm.controls['email'].hasError('email')){
+        <span> Ingresa un email <strong>valido</strong></span>
+
+      }
+      
+    </div>
+    <!-- name -->
+    <div class="input-content">
+      <label>Name:</label>
+      <input placeholder="Name" formControlName="name">
+      @if(datosForm.controls['name'].hasError('required')){
+      <span><i>Este campo es <strong>requerido</strong></i></span>
+
+      }
+    </div>
+    <!-- phone -->
+    <div class="input-content">
+      <label for="">Phone:</label>
+
+       <!-- si quiero que este campo no se edite agregar readonly al input -->
+       <input readonly placeholder="phone" formControlName="phone">
+       @if(datosForm.controls['phone'].hasError('required')){
+        <span><i>Este campo es <strong>requerido</strong></i></span>
+  
+        }
+        <!-- evaluando funcion personalizada -->
+        @if(datosForm.controls['phone'].hasError('mal')){
+          <span><i>Este campo debe tener <strong>10 digitos</strong></i></span>
+    
+          }
+    </div>
+    <!-- boton enviar -->
+    <div style="text-align: center">
+      <button type="submit" [disabled]="loading" appHighlight="red" name="'contact-form">Enviar</button>
+  
+    </div>
+
+  </form>
+</div>
+
+<div style="margin-bottom: 80px;"></div>

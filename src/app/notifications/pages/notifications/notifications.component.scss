@@ -1,0 +1,31 @@
+// .flex-container {
+//     display: flex;
+//     position: relative;
+//     // justify-content: space-between; /* Uno a la izquierda, otro a la derecha */
+//     align-items: center; /* Alinea verticalmente al centro */
+//     width: 100%; /* Ocupa todo el ancho disponible */
+//     padding: 10px;
+//   }
+  
+//   .left {
+//     background-color: lightblue;
+//     padding: 10px;
+//   }
+  
+//   .right {
+//     background-color: lightcoral;
+//     padding: 10px;
+//   }
+  
+.menu{
+    display: flex;
+    position: relative;
+    padding: 0px 10px;
+    border-bottom: 1px solid black;
+}
+
+.iconos{
+    position: absolute;
+    right: 10px;
+    top: 12px;
+}

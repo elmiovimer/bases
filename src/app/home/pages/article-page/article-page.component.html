@@ -1,0 +1,26 @@
+<ion-content>
+  <app-header title="Article"></app-header>
+  <div class="after-header">
+    <button class="back" [routerLink]="['/home']"> Back</button>
+    <app-cart-details></app-cart-details>
+
+  </div>
+
+  @if (article) {
+    <!-- titulo -->
+    <div style="margin: 10px">
+        <div>
+          <h2 appHighlight="red" name="nombre_del_event" >{{article.title}}</h2>
+        </div>
+        <!-- contenido -->
+        <div>
+          <p>{{article.body}}</p> 
+        </div>
+    </div>
+}
+
+
+
+
+  <app-footer></app-footer>
+</ion-content>

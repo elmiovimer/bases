@@ -1,0 +1,11 @@
+import { ModelsHome } from 'src/app/models/home.models';
+import { ModelsStore } from 'src/app/models/store.models';
+import { ModelsNotifications } from 'src/app/models/notifications.models';
+import { ModelsContact } from 'src/app/models/contact.models';
+
+export namespace Models {
+    export import Home = ModelsHome;
+    export import Store = ModelsStore;
+    export import Notifications = ModelsNotifications ; 
+    export import Contact = ModelsContact;
+}

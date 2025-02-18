@@ -1,0 +1,26 @@
+.article {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background: aquamarine;
+}
+
+.article-title{
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
+}
+
+.article img{
+    width: auto;
+    max-height: 125px;
+    max-width: 50%;
+    background: white ;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.content{
+    padding: 5px;
+    margin: 5px;
+}

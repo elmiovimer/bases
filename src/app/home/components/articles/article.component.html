@@ -1,0 +1,56 @@
+<!-- <div class="article"> -->
+  <!-- imagen -->
+  <!-- <div> -->
+    <!-- <img src="/assets/images/angular-logo.png" alt="logo angular"> -->
+  <!-- </div> -->
+  
+  <!-- titulo -->
+  <!-- <div class="article-title"> -->
+    <!-- <h2>Titulo del articulo</h2> -->
+  <!-- </div> -->
+  
+  <!-- contenido -->
+  <!-- <div class="content"> -->
+    <!-- <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Modi, vitae! Tenetur rem, nostrum nam voluptatem accusamus odit unde quia voluptate pariatur perferendis  -->
+      <!-- eius hic repellendus officia dicta. Quisquam, ratione labore!</p> -->
+      <!--  -->
+    <!-- </div> -->
+  <!-- </div> -->
+  
+  
+  
+  @if (article) {
+    <div class="article" 
+    [routerLink]="['home/article/' + article.id]"
+    >
+    (click)="goToArticle()"
+      
+      <!-- imagen -->
+      <div>
+      <img src="/assets/images/angular-logo.png" alt="logo angular">
+      <!-- <img [src]="article.image.url" [alt]="article.image.desc"> -->
+    </div>
+  
+    <!-- titulo -->
+     <div class="article-title">
+       <h2>{{article.title | titlecase}}</h2>
+     </div>
+  
+     <!-- contenido -->
+     <div class="content">
+      <p>
+        <!-- este pipe [short] es un pipe personalizado. se encuentra en la ruta shared/pipes/short -->
+        {{article.body | titlecase | short : 10}}
+      </p>
+  
+     </div>
+     <div class="content">
+      <p>
+        {{article.time | date}}
+      </p>
+  
+     </div>
+  </div>
+
+}
+

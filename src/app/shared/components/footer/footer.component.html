@@ -1,0 +1,12 @@
+<div>
+  <h3 class="footer" id="focus-target" >
+    <!-- Footer -->
+     <div class="button-div">
+       <button [routerLink]="['/store']"  class='option-menu'>Store</button>
+       <button [routerLink]="['/home']" class='option-menu'>home</button>
+       <button [routerLink]="['/contact']" class='option-menu'>contact</button>
+
+     </div>
+       <div class="right-div" [ngClass]="{'empty-cart': cant == 0}"><p>{{cant}}</p></div>
+  </h3>
+</div>

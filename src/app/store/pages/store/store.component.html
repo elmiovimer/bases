@@ -1,0 +1,34 @@
+<ion-content>
+  <app-header title="Store"></app-header>
+
+  
+  @if(!loading){
+
+    <!-- <div class="cart-content"><p class="cart-details">QT: {{cart?.totalQT}} | Total: ${{cart?.total.toFixed(2)}} </p></div> -->
+
+    <app-cart-details></app-cart-details>
+    @for (item of items; track $index) {
+      
+      <app-product-detail [item]="item"></app-product-detail>
+      
+
+    } @empty {
+      <p>no hay articulos</p>
+    }
+
+
+  } @else {
+    <p style="text-align: center">loading...</p>
+    
+  }
+  
+  <!-- <div style="margin: 60px"></div>
+  <div>
+    <input (keyup)="validateInput($event)">
+  </div>
+  <div>
+    <input (keydown)="updateInput()">
+  </div>
+  <div style="margin: 60px"></div> -->
+  <app-footer></app-footer>
+</ion-content>

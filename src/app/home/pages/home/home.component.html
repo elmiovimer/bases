@@ -1,0 +1,48 @@
+<ion-content >
+  <div id="home.component">
+
+    <app-header title="Home" ></app-header>
+    <app-cart-details></app-cart-details>
+  
+    @if (!loading) {
+  
+      @for (article of articles; track $index) {
+        <app-article [article]="article"></app-article>
+    
+    
+      }@empty {
+        <p>no hay articulos para mostrar</p>
+      }
+    }@else {
+      <p class="loading">Loading</p>
+    }
+      
+      
+      <!-- <app-not-found></app-not-found> -->
+      <app-footer></app-footer>
+  </div>
+
+    
+</ion-content>
+
+
+
+<!-- <ion-content>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>My Ionic App</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Item 1</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Item 2</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Item 3</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content> -->

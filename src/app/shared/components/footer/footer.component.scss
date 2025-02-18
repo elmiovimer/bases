@@ -1,0 +1,56 @@
+.footer{
+    background-color: #6eabe7;
+    padding: 20px;
+    margin-bottom: 0px;
+    
+    // text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid black;
+}
+
+h3{
+    color: #fff;
+    text-align: center;
+    font-style: italic;
+
+}
+
+.option-menu {
+    padding: 5px 10px;
+    margin: 0px 10px;
+    border: 1px solid #03A9F4;
+    border-radius: 5px;
+    background-color: #b3d1e8;
+}
+.button-div{
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra los botones */
+    align-items: center;
+    position: relative;
+}
+
+.right-div {
+    position: absolute;
+    right: 20px; /* Ajusta según necesites */
+    bottom: 18px;
+    /* background: yellow; */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: #FFC107;
+    color: black
+
+}
+
+.empty-cart{
+    background-color: blue;
+    color: #fff;
+}
+
+

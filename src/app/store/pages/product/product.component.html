@@ -1,0 +1,14 @@
+<ion-content>
+  <app-header></app-header>
+  <div class="after-header">
+    <button class="back" [routerLink]="['/store']"> Back</button>
+    <app-cart-details></app-cart-details>
+
+  </div>
+
+  <h1>{{itemName}}</h1>
+  <img [src]="image" alt="image">
+  <h3>{{itemDesc}}</h3>
+
+  <app-footer></app-footer>
+</ion-content>
