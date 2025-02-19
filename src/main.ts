@@ -5,6 +5,16 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient } from '@angular/common/http';
+import { importProvidersFrom } from '@angular/core';
+
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, indexedDBLocalPersistence, initializeAuth, provideAuth } from '@angular/fire/auth';
+import { environment } from './environments/environment';
+import { Capacitor } from '@capacitor/core';
+import { initializeFirestore, persistentLocalCache } from 'firebase/firestore';
+
+
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -12,5 +22,29 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(),
+
+    //se debe hacer esta integracion para que firebase funcione correectamente en las ios y android
+    provideFirebaseApp(() => {
+      const app = initializeApp(environment.firebaseConfig);
+      if (Capacitor.isNativePlatform()) {
+        initializeFirestore(app, {
+          localCache: persistentLocalCache(),
+        });
+        initializeAuth(app, {
+          persistence: indexedDBLocalPersistence
+        });
+      }
+      return app;
+    }),
+
+    //firebase
+    //esta es la importacion correcta para la version de angular 17
+    // importProvidersFrom(provideFirebaseApp(() => initializeApp())),
+    // importProvidersFrom(provideFirestore(() => getFirestore()),),
+
+    //esta es la importacion correcta para la version de angular 18 en adelante
+    // provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirestore(() => getFirestore()),
+    // provideAuth(()=> getAuth()),
   ],
 });

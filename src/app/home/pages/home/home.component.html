@@ -3,26 +3,26 @@
 
     <app-header title="Home" ></app-header>
     <app-cart-details></app-cart-details>
-  
+
     @if (!loading) {
-  
+
       @for (article of articles; track $index) {
         <app-article [article]="article"></app-article>
-    
-    
+
+
       }@empty {
         <p>no hay articulos para mostrar</p>
       }
     }@else {
       <p class="loading">Loading</p>
     }
-      
-      
+
+
       <!-- <app-not-found></app-not-found> -->
       <app-footer></app-footer>
   </div>
 
-    
+
 </ion-content>
 
 

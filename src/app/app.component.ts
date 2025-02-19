@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { FirestoreService } from './firebase/firestore.service';
 
 
 @Component({
@@ -9,6 +10,7 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
   standalone: true,
 })
 export class AppComponent {
+  private firestoreService = inject(FirestoreService);
 
   constructor() {}
 }
