@@ -1,13 +1,14 @@
 export namespace ModelsStore{
     export interface Item {
         id? : string;
+        date? : Date;
         name: string;
         desc: string;
         price: number;
         image?: string;
         stock: number;
-        // categories: string[];
-        // salty?: boolean;
+        categories?: string[];
+        salty?: boolean;
         // link?: string;
     }
     export interface Order {}
