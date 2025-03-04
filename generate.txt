@@ -48,3 +48,9 @@ ionic g d shared/directives/highlight
 ng generate guard your-guard
 
 ionic g g /shared/guards/isAdmin
+
+
+ionic g m auth/pages/profile
+
+ionic g c auth/pages/completar-registro
+ionic g s services/user

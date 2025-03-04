@@ -1,4 +1,156 @@
 <ion-content>
-  <h1>login</h1>
-  <app-login-form></app-login-form>
+  <div style="text-align: center;">
+    <p>LOGIN</p>
+  </div>
+
+  @if(!loading){
+      <div style="text-align: center; height: auto; max-width: 100%;">
+
+      <img class="logo" src="/assets/images/logo_inverted.png" *ngIf="isDarkMode">
+      <img class="logo" src="/assets/images/logo.png" *ngIf="!isDarkMode">
+      </div>
+
+
+    <!-- iniciarSeccionConCorreoYContrasena -->
+    <!-- <div style="text-align: center;">
+    <button (click)="enableLoginWithEmailAndPassword = !enableLoginWithEmailAndPassword">Log in with user & password</button>
+    </div> -->
+    @if (user) {
+    <div style="margin:20px">
+      <h3>Bienvenido</h3>
+      <p>Email: {{user.email}}</p>
+      <p>Name: {{user.displayName}}</p>
+      <div style="text-align: center;">
+        <button [routerLink]="['/user/profile']">Profile</button>
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <button (click)="salir()">Salir</button>
+    </div>
+    }@else{
+
+    @if (!enableLoginWithEmailAndPassword) {
+      @for (provider of providers; track $index){
+        <div style="text-align: center;">
+          <button
+            (click)="loginWithProvider(provider)"
+            [ngStyle]="{
+              'background-color':provider.color,
+              'color': provider.textColor,
+            }"
+          >{{provider.name}}</button>
+        </div>
+
+      }
+
+    }
+    
+    @if(enableLoginWithEmailAndPassword){
+      <div style="text-align: center">
+        <button (click)="enableLoginWithEmailAndPassword = false"
+        >
+          Iniciar sesión con otro método
+        </button>
+      </div>
+
+      <!-- log with user and password -->
+      <div class="content-form">
+        <form [formGroup]="datosForm" (ngSubmit)="login()" >
+          <!-- email -->
+          <div class="content-input" >
+            <label for="">Email:</label>
+            <input placeholder="Email" formControlName="email" >
+            @if(datosForm.controls['email'].hasError('required') && datosForm.controls['email'].value !=''){
+              <span>
+                <i>
+                  This field is <strong>required</strong>
+                </i>
+              </span>
+            }
+            @if(datosForm.controls['email'].hasError('email')){
+              <span style="text-align: end">
+                <i>
+                  please type a <strong>valid</strong> email
+                </i>
+              </span>
+            }
+          </div>
+
+          <!-- password -->
+
+          <div class="content-input">
+            <label for="">Password:</label>
+            <input placeholder="Password" type="password" minlength="6" formControlName="password">
+            @if(datosForm.controls['password'].hasError('required') && datosForm.controls['password'].value !=''){
+              <span>
+                <i>
+                  This field is <strong>required</strong>
+                </i>
+              </span>
+            }
+          </div>
+
+          <!-- enviar -->
+            <div style="text-align: center;" class="">
+              <button type="submit" [disabled]="loading">
+                <strong>Login</strong>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <div style="text-align: center">
+        <p> ¿No tienes un usuario?</p>
+        <button class="button-gris" [routerLink]="['/user/register']" >Registrarse</button>
+      </div>
+
+      <div style="text-align: center">
+        <p> ¿Olvidaste tu contraseña?</p>
+        <button class="registrarse" (click)="enableResetPassword = true">
+          Recuperar contraseña
+        </button>
+      </div>
+
+        @if (enableResetPassword) {
+          <div class="content-form">
+            <form [formGroup]="datosForm" (ngSubmit)="resetPassword()">
+
+              <!-- email -->
+              <div class="input-content">
+                <label>Email</label>
+                <input placeholder="Email" formControlName="email">
+                <span
+                    *ngIf="datosForm.controls['email'].hasError('required')">
+                  <i>Este campo es <strong>requerido</strong></i>
+                </span>
+                <span style="text-align: end;"
+                *ngIf="datosForm.controls['email'].hasError('email')">
+                <i>Ingresa un email <strong>válido</strong></i>
+                </span>
+
+              </div>
+
+              <!-- enviar -->
+              <div style="text-align: center">
+                <button type="submit"[disabled]="loading">
+                    <strong>enviar correo</strong>
+                </button>
+                <button type="button" (click)="enableResetPassword = false">
+                cancelar
+                </button>
+              </div>
+
+
+            </form>
+          </div>
+        }
+
+    }
+    }
+
+  }
+  <!-- foto de la empresa -->
+
+
 </ion-content>

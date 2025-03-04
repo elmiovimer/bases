@@ -1,0 +1,60 @@
+// @import 'theme/variables';
+.content {
+  margin: 15px;
+  border: 1px dotted #9E9E9E;
+  padding: 20px;
+}
+
+input {
+  padding: 15px;
+  width: 90%;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  background-color: var(--ocre);
+  border-radius: 5px;
+  margin: 10px;
+  // width: 150px;
+  // padding: 10px;
+}
+
+img {
+  max-width: 100px;
+}
+
+
+
+.button-gris {
+  background-color: #d7d8da;;
+}
+
+.content-form {
+  margin: 15px;
+  border: 1px dotted #9E9E9E;
+  padding: 20px;
+}
+
+span {
+  color: red;
+  width: 100%;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.logo{
+  // border: 0px;
+  // border-radius: 0px;
+  // border-width: 0px;
+  // text-align: center;
+  max-width: 300px;
+  height: auto;
+}
+
+.color{
+  --marron: #3F2021;  /* Pantone 4975C */
+  --ocre: #BD9B60;  /* Pantone 7562C */
+  --blanco: #F5F7F6;  /* Pantone 11-0601 */
+  --negro: #101820;  /* Pantone Black 6C */
+}

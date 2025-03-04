@@ -9,6 +9,7 @@ export namespace ModelsStore{
         stock: number;
         categories?: string[];
         salty?: boolean;
+        enable? : boolean;
         // link?: string;
     }
     export interface Order {}

@@ -1,0 +1,9 @@
+{
+  "/__/auth":{
+    "target": "https://basesfire-devserv.firebaseapp.com",
+    "secure": true,
+    "changeOrigin": true,
+    "loglevel": "debug"
+
+  }
+}

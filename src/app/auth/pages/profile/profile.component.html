@@ -1,0 +1,226 @@
+<ion-content>
+  <div style="text-align: center;">
+    <p>PROFILE</p>
+  </div>
+
+  <div>
+    <button class="button-back" [routerLink]="['/user/login']"> < Back</button>
+  </div>
+
+  @if(!loading){
+    @if (user && userProfile){
+      <div style="margin: 20px">
+
+        <h3><i>Welcome</i></h3>
+
+        @if(user.photoURL){
+          <div>
+            @if(!newPhoto){
+              <img [src]="user.photoURL ">
+            } @else{
+              <img [src]="newPhoto">
+            }
+          </div>
+
+
+        }
+
+        @if(correoVerificado){
+          <span style="color: green;">correo verificado </span>
+        } @else{
+          <span>correo no verificado</span>
+          <button class="button-gris" (click)="enviarCorreo()">enviar correo de verificacion</button>
+        }
+
+        <p style="margin: 0px;">
+          <strong>Email:</strong> {{user.email}}
+          <button class="button-edit" (click)="enableActualizarEmail = !enableActualizarEmail">edit</button>
+        </p>
+
+        @if(enableActualizarEmail){
+          <div class="content-form">
+            <form [formGroup]="formNewEmail" (ngSubmit)="actualizarEmail()">
+              <!-- email -->
+               <div class="input-content">
+                <label for="">New Email</label>
+                <input placeholder="Email" formControlName="email">
+                <span *ngIf="formNewEmail.controls['email'].hasError('required')">
+                  <i>This field is <strong>required</strong></i>
+
+                </span>
+                <span *ngIf="formNewEmail.controls['email'].hasError('email')">
+                  <i>Type a <strong>valid</strong> email</i>
+
+                </span>
+               </div>
+
+               <!-- password -->
+               <!-- <div class="input-content">
+                <label for="">Actual Password</label>
+                <input placeholder="password" formControlName="password">
+                <span *ngIf="formNewEmail.controls['password'].hasError('required')">
+                  <i>This field is <strong>required</strong></i>
+
+                </span>
+
+               </div> -->
+
+               <!-- enviar -->
+                <div style="text-align: center;">
+                  <button (click)="enableActualizarEmail = false"><strong>Cancel</strong></button>
+                  <button type="submit" [disabled]="loading">Update</button>
+
+                </div>
+
+            </form>
+
+          </div>
+        }
+
+
+        <p><strong>Name:</strong> {{user.displayName}}</p>
+        <p><strong>Age:</strong>
+          <input type="'number" class="input-age" [(ngModel)]="userProfile.age">
+          <button class="button-gris" (click)="actualizarEdad()">Save</button>
+        </p>
+
+        <!-- actualizar perfil -->
+        <div>
+          <button class="button-gris" type="button" (click)="enableActualizarPerfil = !enableActualizarPerfil">Update Profile</button>
+          @if(enableActualizarPerfil){
+            <div class="content-update">
+              <p>Change profile Name:</p>
+
+              <div style="text-align: center;">
+                <input type="text" [(ngModel)] = 'newName'>
+              </div>
+
+              <p>Change profile picture:</p>
+
+              <div style="text-align: center;">
+                <input type="text" [(ngModel)] = 'newPhoto'>
+              </div>
+
+              <div style="text-align: center;">
+                <button type="button" (click)="enableActualizarPerfil = false">Cancel</button>
+                <button (click)="actualizarPerfil()">Update</button>
+              </div>
+
+            </div>
+
+          }
+        </div>
+
+        <!-- actualizar contrasena -->
+         <div>
+          <button class="button-gris" (click)="enableActualizarContrasena = !enableActualizarContrasena">Update password</button>
+          @if(enableActualizarContrasena){
+            <div class="content-update">
+              <form [formGroup]="formCambiarPassword" (ngSubmit)="cambiarPassword()">
+
+                <!-- old password -->
+                <!-- <div class="input-content">
+                  <label for="">Old password</label>
+                  <div class="password">
+                    <input placeholder="Old password" [type]="visible ? 'text' : 'password'" minlength="6" formControlName="oldPassword">
+                    <button  (click)="visible = !visible">
+                      {{visible? 'hide' : 'unhide'}}
+                    </button>
+                    <span style="text-align: end;" *ngIf="formCambiarPassword.controls['oldPassword'].hasError('required')">
+                      <i>This field is <strong>required</strong></i>
+
+                    </span>
+
+                  </div>
+
+                </div> -->
+
+                <div class="input-content">
+                  <label for="">New password</label>
+                  <input placeholder="New password" type="password" formControlName="newPassword">
+
+                  <span *ngIf="formCambiarPassword.controls['newPassword'].hasError('required')">
+                    <i>This field is <strong>required</strong></i>
+
+                  </span >
+                  <span *ngIf="formCambiarPassword.controls['newPassword'].hasError('pattern')">
+                    <i>Debe tener al menos 1 mayuscula, 1 minuscula, un caracter especial, un numero y minimo 8 caracteres</i>
+
+                  </span>
+                </div>
+
+                <div class="input-content">
+                  <label for="">Repeat New password</label>
+                  <input placeholder="Repeat New password" type="password" formControlName="repeatPassword">
+                  <span *ngIf="formCambiarPassword.controls['repeatPassword'].hasError('required')">
+                    <i>This field is <strong>required</strong></i>
+
+                  </span>
+                  <span *ngIf="formCambiarPassword.controls['repeatPassword'].hasError('notSame')">
+                    <i>las contrasenas no coinciden</i>
+
+                  </span>
+                </div>
+
+                <div style="text-align: center;">
+                  <button type="button" (click)="enableActualizarContrasena = false">Cancel</button>
+                  <button type="submit">Update</button>
+                </div>
+              </form>
+
+
+
+
+
+            </div>
+          }
+        </div>
+
+        <!-- borrar cuenta -->
+
+        <div>
+          <button class="button-gris" (click)="enableBorrarCuenta = !enableBorrarCuenta">Delete Account</button>
+          @if (enableBorrarCuenta) {
+            <div class="content-form">
+              <form [formGroup]="formDeleteUser" (ngSubmit)="eliminarCuenta()">
+                <!-- <div class="input-content">
+                  <label for="">Password:</label>
+                  <div class="password">
+                    <input placeholder="password" [type]="visible ? 'text' : 'password'" minlength="6" formControlName="password">
+                    <button  (click)="visible = !visible">
+                      {{visible? 'hide' : 'unhide'}}
+                    </button>
+                    <span style="text-align: end;" *ngIf="formCambiarPassword.controls['oldPassword'].hasError('required')">
+                      <i>This field is <strong>required</strong></i>
+
+                    </span>
+
+                  </div>
+
+                </div> -->
+
+                <div style="text-align: center;">
+                  <button type="button" (click)="enableBorrarCuenta = false">Cancel</button>
+                  <button type="submit">Delete</button>
+                </div>
+
+              </form>
+            </div>
+
+
+          }
+        </div>
+
+
+      </div>
+
+
+    }
+
+  }@else {
+    <div>
+      <p>loading...</p>
+    </div>
+  }
+
+</ion-content>

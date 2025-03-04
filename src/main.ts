@@ -13,9 +13,10 @@ import { getAuth, indexedDBLocalPersistence, initializeAuth, provideAuth } from 
 import { environment } from './environments/environment';
 import { Capacitor } from '@capacitor/core';
 import { initializeFirestore, persistentLocalCache } from 'firebase/firestore';
+import { LogLevel, setLogLevel } from '@angular/fire';
 
 
-
+// setLogLevel(LogLevel.VERBOSE);
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -45,6 +46,9 @@ bootstrapApplication(AppComponent, {
     //esta es la importacion correcta para la version de angular 18 en adelante
     // provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth())
     // provideAuth(()=> getAuth()),
+
   ],
+  
 });

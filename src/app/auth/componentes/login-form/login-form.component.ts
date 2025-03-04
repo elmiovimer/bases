@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { AuthenticationService } from '../../../firebase/authentication.service';
+import { Models } from 'src/app/models/models';
 
 @Component({
   selector: 'app-login-form',
@@ -8,8 +11,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginFormComponent  implements OnInit {
 
-  constructor() { }
 
-  ngOnInit() {}
+
+
+  constructor() {
+
+   }
+
+  ngOnInit() {
+  }
+
+
 
 }

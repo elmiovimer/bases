@@ -7,7 +7,13 @@
   </div>
 
   <h1>{{itemName}}</h1>
-  <img [src]="image" alt="image">
+  @if(image){
+    <img [src]="image" alt="image">
+
+  }@else {
+    <img src="/assets/images/default.webp" alt="image">
+
+  }
   <h3>{{itemDesc}}</h3>
 
   <app-footer></app-footer>

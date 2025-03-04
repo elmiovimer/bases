@@ -13,7 +13,25 @@
     border: 1px solid #607D8B;
     margin-right: 10px;
 }
+.more {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background: aquamarine;
+  font-weight: bold;
+}
+.category {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background: aliceblue;
+  font-weight: bold;
+}
 
+.category-selected{
+  background: aquamarine;
+
+}
 .button-add {
     background: greenyellow;
     color: white;
@@ -38,8 +56,8 @@
 }
 
 .item-buttons{
-    display: flex; 
-    align-items: center; 
-    justify-content: flex-end; 
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 8px;
 }

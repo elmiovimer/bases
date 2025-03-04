@@ -23,8 +23,8 @@ export class HomeComponent  implements OnInit, OnDestroy {
 
 
 
-  
-  
+
+
 
 
   constructor() { }
@@ -33,23 +33,23 @@ export class HomeComponent  implements OnInit, OnDestroy {
     this.cartSubscription =  this.cartService.getCartChanges().subscribe((cartWithChanges) => {
       console.log('cambios en el home -> ',cartWithChanges)
 
-      
-      
-      
+
+
+
     })
     this.getArticles();
     // this.createArticle();
-    
+
     // this.webService.login('vimerfabian@gmail.com', '123456').then(res =>{
     //   this.res = res;
     //   console.log('res ->', this.res);
     // })
-    
+
   }
 
   ngOnDestroy(): void {
     this.cartSubscription?.unsubscribe();
-    console.log(this.res)
+    // console.log(this.res)
   }
 
   async getArticles(){
@@ -62,7 +62,7 @@ export class HomeComponent  implements OnInit, OnDestroy {
         element.time = new Date();
       });
     }
-    console.log('data -> ', this.articles);
+    // console.log('data -> ', this.articles);
     this.loading = false;
   }
 
@@ -91,7 +91,7 @@ export class HomeComponent  implements OnInit, OnDestroy {
   //   } // Elimina el foco del botón actual
   //   console.log(document.getElementById('home.component'))
   // }
-  
+
   // ionViewDidEnter(){
   //   console.log(document.getElementById('focus-target')) // Elimina el foco del botón actual
 

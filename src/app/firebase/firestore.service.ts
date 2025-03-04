@@ -1,12 +1,12 @@
 import { observable } from './../../../node_modules/rxjs/src/internal/symbol/observable';
 import { name } from './../../../node_modules/@leichtgewicht/ip-codec/types/index.d';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
 import { DocumentSnapshot, getDoc, Firestore, addDoc, collection,QuerySnapshot, collectionData, where, collectionGroup, deleteDoc, doc, docData, getDocs, query, serverTimestamp, setDoc, updateDoc, or, WhereFilterOp, and, limit  } from '@angular/fire/firestore';
 // import {   } from 'firebase/firestore';
 import { Observable, timestamp } from 'rxjs';
 import { Models } from '../models/models';
 
-import { orderBy, startAfter } from 'firebase/firestore';
+import { getAggregateFromServer, orderBy, startAfter } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -22,19 +22,28 @@ export class FirestoreService {
 
 
 
-  async createDocument<tipo>(path : string, data : tipo){
+  async createDocument<tipo>(path : string, data : tipo, id : string = null){
     //   Descripción: Crea un nuevo documento en la colección especificada, generando automáticamente un ID y añadiendo la marca de tiempo de creación (serverTimestamp()).
     //   Parámetros:
       //   path: Ruta de la colección donde se almacenará el documento.
       //   data: Objeto de datos a guardar.
     //   Retorno: Promise<void>, indicando que la operación se completó.
+
+
     const refCollection = collection(this.firestore, path);
-    const refDoc = doc(refCollection);
+    let refDoc; // = doc(refCollection);
+    if(id){
+      refDoc = doc(this.firestore, `${path}/${id}`);
+    } else {
+      refDoc = doc(refCollection);
+
+    }
     const dataDoc: any = data;
     dataDoc.id = refDoc.id;
     dataDoc.date = serverTimestamp();
+    await setDoc(refDoc, dataDoc);
 
-    return await setDoc(refDoc, dataDoc);
+    return dataDoc.id;
   }
 
 
@@ -70,6 +79,7 @@ export class FirestoreService {
     // Parámetros: path - Ruta del documento.
     // Retorno: DocumentSnapshot<tipo>, que contiene los datos del documento.
     const docRef = doc(this.firestore, path);
+
     return await getDoc(docRef) as DocumentSnapshot<tipo>;
 
 
@@ -172,6 +182,13 @@ export class FirestoreService {
       let q = query(ref, where(campo, condicion, valor))
       return await getDocs(q) as QuerySnapshot<tipo>;
     }
+
+    async getAggregations(path : string, aggregate : any,
+      querys : Models.Firebase.whereQuery[] = [], extras : Models.Firebase.extrasQuery = Models.Firebase.defaultExtrasQuery){
+        let q = this.getQuery(path, querys, extras);
+        const snapshot = await getAggregateFromServer(q, aggregate);
+        return snapshot.data();
+      }
 
 
 

@@ -1,0 +1,28 @@
+.content-form {
+  margin: 15px;
+  border: 1px dotted #9E9E9E;
+  padding: 20px;
+}
+
+button {
+  background-color: var(--ocre);
+  margin-top: 30px;
+  margin: 10px;
+  padding: 10px 40px;
+  border-radius: 10px;
+  // background: aquamarine;
+}
+
+input {
+  margin: 10px 0px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--ocre);
+  width: 100%;
+}
+.input-content {
+  margin: 10px;
+}
+span {
+  color: red;
+}
