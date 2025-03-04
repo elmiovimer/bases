@@ -34,15 +34,23 @@ export class RequestLoginComponent  implements OnInit {
 
   async getQueryParams(){
 
+    let result;
     const queryParams : any = this.route.snapshot.queryParams;
     console.log('queryParams ->', queryParams);
     if(queryParams.provider && queryParams.intentId){
       const provider = queryParams.provider;
-      const result = await this.authenticationService.loginWithProvider(provider)
-      this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
+      if(environment.production){
+        this.authenticationService.loginWithProvider(provider);
+        result =  await this.authenticationService.getRedirectResult();
+
+
+      }
+      else{
+        result = await this.authenticationService.loginWithProvider(provider);
+
+      }
+      this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}});
       this.getTokenOfProvider(result)
-
-
 
     }
 
@@ -69,6 +77,7 @@ export class RequestLoginComponent  implements OnInit {
       const credential = OAuthProvider.credentialFromResult(result);
       console.log('credential ->', credential);
       const token = credential.idToken ? credential.idToken : credential.accessToken;
+      console.log('token ->', token)
       this.saveToken(token);
     }
 

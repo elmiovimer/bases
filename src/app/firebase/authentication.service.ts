@@ -6,6 +6,7 @@ import { Models } from '../models/models';
 import { updateDoc } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
 // import { environment } from '../environments/environment';
 
 @Injectable({
@@ -165,10 +166,14 @@ async loginWithTokenOfprovider(providerId : string, token : string){
       provider = new OAuthProvider('apple.com')
 
     }
+    if (providerId == 'facebook') {
+      provider = new FacebookAuthProvider();
+     }
+
     if(environment.production){
-      const res =  signInWithRedirect(this.auth, provider);
-      console.log('res, signinwithreditect ->',res)
-      return this.getRedirectResult();
+      return  signInWithRedirect(this.auth, provider);
+      // console.log('res, signinwithreditect ->',res)
+      // return this.getRedirectResult();
 
     }
     else{
@@ -199,11 +204,11 @@ async loginWithTokenOfprovider(providerId : string, token : string){
             console.log('response ->', response);
             if (response.provider == providerId && response.token) {
               console.log('intento de login con token')
-              // Browser.close();
+              Browser.close();
               s.unsubscribe();
               // this.firestoreService.deleteDocument(`${path}/${id}`)
               resolve(response.token);
-              console.log('login con token exitoso')
+              console.log('login con token ')
 
             }
 
@@ -215,6 +220,7 @@ async loginWithTokenOfprovider(providerId : string, token : string){
 
         // const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
         console.log('link ->', link)
+        await Browser.open({ url: link });
         // this.router.navigate(['/user/request-login'], {queryParams: {intentId: queryParams.intentId}});
         // this.router.navigate([link]);
 

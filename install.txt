@@ -4,3 +4,27 @@ npm i @angular/fire@17.0.1 firebase@10.10.0
 
 
 ionic g s firebase/authentication
+
+npm install @capacitor/browser@7
+npx cap sync
+
+
+para crear y publicar proyecto en un hosting de firebase
+type in cmd
+-firebase login
+   //hacer login
+  -y
+//para iniciar el firebase host
+  -firebase init
+    - select -> hosting: configure files to firebase hosting and optionally set up github action deploys
+    -select -> use an existing project
+    - select project
+    - what do you want to use as your public directory? respond -> www
+    - configure as a single-app? respond -> y
+  -set up automatic builds and eploys with github? respond  -> n
+//compilar proyecto
+  -ionic build --prod
+  //para hacer el deploy
+  -firebase deploy --only hosting
+
+

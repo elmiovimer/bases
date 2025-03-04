@@ -31,6 +31,12 @@ export class LoginComponent  implements OnInit, OnDestroy {
       textColor: 'white'
     },
     {
+      name: 'iniciar sesion con Facebook',
+      id: 'facebook',
+      color: '#20a3df',
+      textColor: 'white'
+    },
+    {
       name: 'iniciar sesion con Apple',
       id: 'apple',
       color: 'black',

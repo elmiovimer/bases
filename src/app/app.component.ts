@@ -24,9 +24,9 @@ export class AppComponent {
   // console.log(products);
 
   constructor() {
-    fetch('/__/auth/handler')
-  .then(response => console.log(response))
-  .catch(error => console.error('Error:', error));
+  //   fetch('/__/auth/handler')
+  // .then(response => console.log(response))
+  // .catch(error => console.error('Error:', error));
 
   // this.test();
     // this.authenticationService.verifyUserDoc();
