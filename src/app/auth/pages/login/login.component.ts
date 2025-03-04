@@ -7,6 +7,7 @@ import { updateDoc } from '@angular/fire/firestore';
 import { FirestoreService } from '../../../firebase/firestore.service';
 import {User} from '@angular/fire/auth'
 import { Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-login',
@@ -161,12 +162,18 @@ export class LoginComponent  implements OnInit, OnDestroy {
       this.enableLoginWithEmailAndPassword = true;
       return;
     }
-    // this.authenticationService.loginWithProvider(provider.id, true);
-    const token = await this.authenticationService.getTokenOfProvider(provider.id);
-    console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
 
-    await this.authenticationService.loginWithTokenOfprovider(provider.id, token);
-    // this.router.navigate(['user', 'profile']);
+    if (Capacitor.isNativePlatform()) {
+      const token = await this.authenticationService.getTokenOfProvider(provider.id);
+      console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
+
+      await this.authenticationService.loginWithTokenOfprovider(provider.id, token);
+      // this.router.navigate(['user', 'profile']);
+
+    } else{
+      this.authenticationService.loginWithProvider(provider.id);
+
+    }
 
 
 

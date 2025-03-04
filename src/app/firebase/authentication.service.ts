@@ -216,9 +216,9 @@ async loginWithTokenOfprovider(providerId : string, token : string){
           }
         })
 
-        const link = `http://localhost:4200/user/request-login?provider=${providerId}&intentId=${id}`;
+        // const link = `http://localhost:4200/user/request-login?provider=${providerId}&intentId=${id}`;
 
-        // const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
+        const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
         console.log('link ->', link)
         await Browser.open({ url: link });
         // this.router.navigate(['/user/request-login'], {queryParams: {intentId: queryParams.intentId}});
