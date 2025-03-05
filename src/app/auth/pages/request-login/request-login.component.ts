@@ -20,68 +20,61 @@ export class RequestLoginComponent  implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
+
   message : string = 'procesando...';
 
   constructor() {
 
     console.log('en request - login')
     this.getQueryParams();
-    // this.getTokenOfProvider();
+    this.getTokenOfProvider();
+
+
 
    }
 
   ngOnInit() {}
 
-  async getQueryParams(){
-
-    let result;
-    const queryParams : any = this.route.snapshot.queryParams;
-    console.log('queryParams ->', queryParams);
-    if(queryParams.provider && queryParams.intentId){
+  getQueryParams() {
+    const queryParams: any = this.route.snapshot.queryParams;
+    console.log('queryParams -> ', queryParams);
+    if (queryParams.provider && queryParams.intentId) {
       const provider = queryParams.provider;
-      if(environment.production){
-        this.authenticationService.loginWithProvider(provider);
-        result =  await this.authenticationService.getRedirectResult();
+      // if(!environment.production){ //esto esta sin probar y es para ser utilizado solo en pruebas
+      //   const res = this.authenticationService.loginWithProviderByPopup(provider);
+      //   this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
+      //   this.getTokenOfProviderbyPopup(res)
 
 
-      }
-      else{
-        result = await this.authenticationService.loginWithProvider(provider);
 
-      }
-      this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}});
-      this.getTokenOfProvider(result)
-
+      // }
+      this.authenticationService.loginWithProvider(provider)
+      this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
     }
 
   }
 
+  async getTokenOfProvider() {
+      const result =  await this.authenticationService.getRedirectResult();
+      console.log('getRedirectResult -> ', result);
+      if (result) {
+        this.message = 'redirigiendo...'
+        const credential = OAuthProvider.credentialFromResult(result)
+        console.log('credential -> ', credential);
+        const token = credential.idToken ? credential.idToken : credential.accessToken;
+        this.saveToken(token);
+      }
+  }
+  async getTokenOfProviderbyPopup(result? : any) {
 
-
-
-  async getTokenOfProvider(res? : any){
-    // let result;
-    // if(res){
-    //   result = res;
-
-
-    // }else{
-    //   result  = await this.authenticationService.getRedirectResult();
-
-    // }
-    const result = res
-
-    console.log('getRedirectResult ->', result);
-    if(result){
-      this.message = 'redirigiendo...';
-      const credential = OAuthProvider.credentialFromResult(result);
-      console.log('credential ->', credential);
-      const token = credential.idToken ? credential.idToken : credential.accessToken;
-      console.log('token ->', token)
-      this.saveToken(token);
-    }
-
-
+      console.log('getRedirectResult -> ', result);
+      if (result) {
+        this.message = 'redirigiendo...'
+        const credential = OAuthProvider.credentialFromResult(result)
+        console.log('credential -> ', credential);
+        const token = credential.idToken ? credential.idToken : credential.accessToken;
+        this.saveToken(token);
+      }
   }
 
   async saveToken (token : string){

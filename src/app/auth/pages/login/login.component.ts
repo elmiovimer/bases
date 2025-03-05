@@ -163,17 +163,17 @@ export class LoginComponent  implements OnInit, OnDestroy {
       return;
     }
 
-    if (Capacitor.isNativePlatform()) {
+    // if (Capacitor.isNativePlatform()) {
       const token = await this.authenticationService.getTokenOfProvider(provider.id);
       console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
 
       await this.authenticationService.loginWithTokenOfprovider(provider.id, token);
       // this.router.navigate(['user', 'profile']);
 
-    } else{
-      this.authenticationService.loginWithProvider(provider.id);
+    // } else{
+      // this.authenticationService.loginWithProvider(provider.id);
 
-    }
+    // }
 
 
 

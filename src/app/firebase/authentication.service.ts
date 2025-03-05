@@ -153,6 +153,29 @@ async loginWithTokenOfprovider(providerId : string, token : string){
     }
   }
 }
+async loginWithProviderByPopup(providerId : string){
+  console.log('loginwithprovider')
+
+
+    let provider;
+    if (providerId == 'google'){
+      provider = new GoogleAuthProvider();
+    }
+    if(providerId == 'apple'){
+      provider = new OAuthProvider('apple.com')
+
+    }
+    if (providerId == 'facebook') {
+      provider = new FacebookAuthProvider();
+     }
+
+    // if(environment.production){
+    if(provider)
+      return  await signInWithPopup(this.auth, provider);
+    else
+    return null;
+
+}
 
   async loginWithProvider(providerId : string){
     console.log('loginwithprovider')
@@ -170,18 +193,19 @@ async loginWithTokenOfprovider(providerId : string, token : string){
       provider = new FacebookAuthProvider();
      }
 
-    if(environment.production){
-      return  signInWithRedirect(this.auth, provider);
+    // if(environment.production){
+    if(provider)
+      signInWithRedirect(this.auth, provider);
       // console.log('res, signinwithreditect ->',res)
       // return this.getRedirectResult();
 
-    }
-    else{
+    // }
+    // else{
 
-     return signInWithPopup(this.auth,provider);
+    //  return signInWithPopup(this.auth,provider);
       // return signInWithRedirect(this.auth, provider)
 
-    }
+    // }
 
   }
 

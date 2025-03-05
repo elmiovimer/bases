@@ -54,3 +54,15 @@ ionic g m auth/pages/profile
 
 ionic g c auth/pages/completar-registro
 ionic g s services/user
+
+npm install @capacitor/ios
+npx cap add ios
+npx cap sync ios
+npx cap open ios
+
+npm install @capacitor/android
+npx cap add android
+npx cap sync android
+npx cap open android
+
+
