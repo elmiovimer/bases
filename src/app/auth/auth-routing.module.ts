@@ -6,6 +6,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { CompletarRegistroComponent } from './pages/completar-registro/completar-registro.component';
 import { RequestLoginComponent } from './pages/request-login/request-login.component';
 import { UsersComponent } from './pages/users/users.component';
+import { guards } from '../shared/guards/guards';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    canActivate: [guards.isLogin()]
   },
   {
     path: 'completar-registro',
