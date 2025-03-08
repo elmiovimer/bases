@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { CompletarRegistroComponent } from './pages/completar-registro/completar-registro.component';
 import { RequestLoginComponent } from './pages/request-login/request-login.component';
+import { UsersComponent } from './pages/users/users.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
   {
     path: 'request-login',
     component: RequestLoginComponent
+  },
+  {
+    path: 'admin',
+    component: UsersComponent
   },
 ];
 

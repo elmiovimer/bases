@@ -4,7 +4,7 @@
   </div>
 
   <div>
-    <button class="button-back" [routerLink]="['/user/login']"> < Back</button>
+    <button class="button-back" [routerLink]="['/auth']"> < Back</button>
   </div>
 
   @if(!loading){
@@ -210,6 +210,14 @@
 
           }
         </div>
+
+        <!-- opciones de administrador -->
+
+        @if (isAdmin) {
+          <div style="text-align: right">
+            <button [routerLink]="['/auth/admin']">administrar usuarios</button>
+          </div>
+        }
 
 
       </div>

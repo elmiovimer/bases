@@ -21,7 +21,7 @@
       <p>Email: {{user.email}}</p>
       <p>Name: {{user.displayName}}</p>
       <div style="text-align: center;">
-        <button [routerLink]="['/user/profile']">Profile</button>
+        <button [routerLink]="['/auth/profile']">Profile</button>
       </div>
     </div>
     <div style="text-align: center;">
@@ -44,7 +44,7 @@
       }
 
     }
-    
+
     @if(enableLoginWithEmailAndPassword){
       <div style="text-align: center">
         <button (click)="enableLoginWithEmailAndPassword = false"
@@ -102,7 +102,7 @@
 
         <div style="text-align: center">
         <p> ¿No tienes un usuario?</p>
-        <button class="button-gris" [routerLink]="['/user/register']" >Registrarse</button>
+        <button class="button-gris" [routerLink]="['/auth/register']" >Registrarse</button>
       </div>
 
       <div style="text-align: center">

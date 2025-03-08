@@ -9,7 +9,10 @@
     <app-cart-details></app-cart-details>
     <div style="text-align:center">
       @for(category of categories; track $index){
-        <button (click)="getProductsByCategoria(category.id)" [ngClass]="{'category-selected':category.id == categoriaSelected}" class="category">{{category.name}}</button>
+        <button
+          (click)="getProductsByCategoria(category.id)"
+          [ngClass]="{'category-selected':category.id == categoriaSelected}"
+          class="category">{{category.name}}</button>
 
       }
     </div>

@@ -32,16 +32,28 @@
   --hover-bg: var(--marron);
 }
 
-.button {
-  background-color: var(--boton-bg);
-  color: var(--boton-text);
-  padding: 10px 20px;
+ion-button {
+  --background: var(--ocre);
+  // background-color: var(--boton-bg);
+  // color: var(--boton-text);
+  padding: 10px 10px;
   border: none;
-  border-radius: 5px;
+  // border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
 }
 
-button:hover {
-  background-color: var(--hover-bg);
+ion-buttons {
+  --background: var(--ocre);
+  // background-color: var(--boton-bg);
+  // color: var(--boton-text);
+  padding: 10px 10px;
+  border: none;
+  // border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
+
+// ion-button:hover {
+//  --background: var(--marron);
+// }

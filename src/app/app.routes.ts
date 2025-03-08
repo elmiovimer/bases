@@ -37,12 +37,12 @@ export const routes: Routes = [
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
-  {
-    path: 'user',
-    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
-  },
+  // {
+  //   path: 'user',
+  //   loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+  // },
 
-  
+
   //--------------------IONIC
   {
     path: 'content',

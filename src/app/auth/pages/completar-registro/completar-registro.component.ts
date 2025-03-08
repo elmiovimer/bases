@@ -65,7 +65,8 @@ export class CompletarRegistroComponent  implements OnInit {
           photo: data.photo,
           age : data.age,
           email : data.email,
-          id : user.uid
+          id : user.uid,
+          roles: { client: true }
         }
         console.log('datosUser ->', datosUser);
         await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, user.uid);

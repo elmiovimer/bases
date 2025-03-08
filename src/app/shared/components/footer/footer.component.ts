@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CartService } from 'src/app/services/cart.service';
 
+
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
@@ -17,7 +18,8 @@ export class FooterComponent  implements OnInit, OnDestroy {
 
   subscripcionCart: Subscription
 
-  constructor() { }
+  constructor() {
+   }
 
   ngOnInit() {
     this.cant = this.cartService.cart.totalQT;
@@ -31,11 +33,11 @@ export class FooterComponent  implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     this.subscripcionCart?.unsubscribe()
-    
+
   }
 
- 
 
- 
+
+
 
 }

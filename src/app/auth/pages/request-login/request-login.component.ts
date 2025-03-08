@@ -39,15 +39,16 @@ export class RequestLoginComponent  implements OnInit {
     const queryParams: any = this.route.snapshot.queryParams;
     console.log('queryParams -> ', queryParams);
     if (queryParams.provider && queryParams.intentId) {
-      const provider = queryParams.provider;
       // if(!environment.production){ //esto esta sin probar y es para ser utilizado solo en pruebas
       //   const res = this.authenticationService.loginWithProviderByPopup(provider);
       //   this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
-      //   this.getTokenOfProviderbyPopup(res)
+      //   this.getTokenOfProviderbyPopup(res);
+      // return;
 
 
 
       // }
+      const provider = queryParams.provider;
       this.authenticationService.loginWithProvider(provider)
       this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
     }

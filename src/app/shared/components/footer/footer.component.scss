@@ -2,7 +2,7 @@
     background-color: #6eabe7;
     padding: 20px;
     margin-bottom: 0px;
-    
+
     // text-align: center;
     position: fixed;
     bottom: 0;
@@ -51,6 +51,12 @@ h3{
 .empty-cart{
     background-color: blue;
     color: #fff;
+}
+
+.botones{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 

@@ -16,8 +16,14 @@ export namespace ModelsAuth{
     photo? : string;
     age? : string;
     id : string;
-    email : string
+    email : string;
+    roles: {
+      admin? : boolean;
+      client? : boolean;
+      driver? : boolean;
+    }
   }
+
 
   export interface UPdatePforileI{
     displayName? : string;
@@ -32,5 +38,6 @@ export namespace ModelsAuth{
     textColor: string;
   }
   export type IdProviderLogin = 'password' | 'google' | 'facebook' | 'apple'
+  export type Rol = 'admin' | 'client' | 'driver'
 
 }

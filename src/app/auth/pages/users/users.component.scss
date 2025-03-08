@@ -1,0 +1,54 @@
+// .rol-selected{
+//   background: var(--ocre);
+//   color: green;
+
+//   padding: 10px 20px;
+//   border: none;
+//   border-radius: 5px;
+//   cursor: pointer;
+//   transition: background 0.3s;
+
+// }
+
+.rol-selected {
+  --background: var(--ocre) !important; /* Naranja */
+  --color: white;        /* Texto blanco */
+}
+.rol-noSelected{
+  --background: grey !important; /* Naranja */
+  --color: white;
+}
+
+.botones
+{
+  display: flex
+;
+    justify-content: space-around;
+    width: 100%;
+}
+.content-form {
+  margin: 15px;
+  border: 1px dotted #9E9E9E;
+  padding: 20px;
+}
+
+input {
+  padding: 15px;
+  width: 90%;
+  border-radius: 5px;
+  margin: 5px 0px 20px 0px;
+}
+
+span {
+  color: red;
+  width: 100%;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 10px;
+  background-color: aquamarine;
+  border-radius: 5px;
+  margin: 10px;
+}

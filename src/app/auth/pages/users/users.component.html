@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrador de usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  @if(enableBuscarPorEmail){
+    <div class="content-form">
+      <form [formGroup]="formEmail" (ngSubmit)="buscarPorEmail()">
+        <!-- email -->
+        <div class="input-content">
+          <label for="">Email</label>
+          <input type="Email" formControlName="email">
+          <span *ngIf="formEmail.controls['email'].hasError('required')">
+            <i>Este campo es <strong>requerido</strong></i>
+          </span>
+          <span *ngIf="formEmail.controls['email'].hasError('email')">
+            <i>Ingresa un email <strong>valido</strong></i>
+          </span>
+        </div>
+
+        <!-- enviar -->
+        <div style="text-align: center">
+          <button (click)="enableBuscarPorEmail = false">
+            <strong>cancelar</strong>
+           </button>
+          <button type="submit"[disabled]="cargando">
+              <strong>buscar</strong>
+          </button>
+        </div>
+
+
+      </form>
+
+    </div>
+
+
+
+  }@else{
+    <div style="text-align: center;">
+      <ion-button (click)="enableBuscarPorEmail = !enableBuscarPorEmail; users=null" >Buscar por email</ion-button>
+    </div>
+
+    <div style="text-align: center;">
+      @for (rol of roles; track $index) {
+        <ion-button
+
+          [ngClass]="{'rol-selected': rol == rolSelected, 'rol-noSelected': rol != rolSelected}"
+          (click)="getMoreUsers(rol)"
+        >{{rol}}</ion-button>
+      }
+    </div>
+
+
+  }
+
+  @if (!cargando) {
+    <ion-list>
+      @for (user of users; track $index) {
+        <app-user-detail [user]="user"></app-user-detail>
+
+      }@empty {
+        
+          <ion-item>
+            <ion-label>no hay usuarios</ion-label>
+          </ion-item>
+
+      }
+
+    </ion-list>
+    @if(enableMore){
+      <ion-button expand="block"  (click)="getMoreUsers()" >
+        More
+      </ion-button>
+
+    }
+  }
+
+</ion-content>

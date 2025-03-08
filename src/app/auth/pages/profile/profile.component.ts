@@ -43,6 +43,7 @@ export class ProfileComponent  implements OnInit {
   enableActualizarPerfil : boolean = false;
   enableActualizarContrasena : boolean = false;
   enableBorrarCuenta : boolean = false;
+  isAdmin : boolean = false
   formNewEmail = this.fb.group({
     email:['', [Validators.required, Validators.email]],
     // password:['', [Validators.required]],
@@ -84,9 +85,13 @@ export class ProfileComponent  implements OnInit {
   getDatosProfile(uid : string){
     console.log('getDatosProfile ->', uid)
     this.firestoreService.getDocumentChanges<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`).subscribe((res)=>{
+      this.isAdmin = false;
       if(res){
         this.userProfile = res;
-        console.log('this.userProfile ->', this.userProfile)
+        console.log('this.userProfile ->', this.userProfile);
+        if(this.userProfile.roles?.admin == true){
+          this.isAdmin = true;
+        }
       }
     });
   }

@@ -5,10 +5,11 @@ import { HeaderComponent } from './components/header/header.component';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { IconNotificationsComponent } from '../notifications/components/icon-notifications/icon-notifications.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonContent, IonFooter, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { ShortPipe } from './pipes/short.pipe';
+
 
 
 
@@ -21,7 +22,7 @@ import { ShortPipe } from './pipes/short.pipe';
   imports: [
     CommonModule,
     NotificationsModule,
-    IonContent,
+    IonContent, IonFooter, IonHeader, IonToolbar,IonTitle, IonButton, IonIcon,
     RouterModule,
     // IconNotificationsComponent,
   ],

@@ -1,0 +1,40 @@
+.contenedor{
+  display: flex;
+  align-items: center;
+  min-height: 80px;
+}
+
+.avatar-container {
+  flex-shrink: 0; /* Evita que el avatar se reduzca o se desplace */
+  margin-right: 10px;
+  width: 50px;
+  height: 50px;
+}
+.rol-noSelected{
+  --background: grey !important; /* Naranja */
+  --color: white;
+}
+.user-info {
+  flex: 1; /* Permite que la información del usuario ocupe el espacio disponible */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+.botones-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  background-color: blue;
+  // flex-direction: column;
+  // gap: 10px; /* Espaciado entre botones */
+}
+
+.botones-finales {
+  display: flex;
+  justify-content: space-between;
+}
+
+ion-label{
+  margin-bottom: 10px;
+}

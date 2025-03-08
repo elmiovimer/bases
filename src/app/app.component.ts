@@ -6,6 +6,8 @@ import { increment } from 'firebase/firestore';
 import { AuthenticationService } from './firebase/authentication.service';
 import { UserService } from './services/user.service';
 import { signInWithCustomToken } from '@angular/fire/auth';
+import { addIcons } from 'ionicons';
+import * as all from 'ionicons/icons';
 
 
 @Component({
@@ -24,6 +26,7 @@ export class AppComponent {
   // console.log(products);
 
   constructor() {
+    addIcons( all );
   //   fetch('/__/auth/handler')
   // .then(response => console.log(response))
   // .catch(error => console.error('Error:', error));
