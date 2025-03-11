@@ -24,7 +24,7 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [guards.isLogin()]
+    canActivate: [guards.isLogin("auth")]
   },
   {
     path: 'completar-registro',

@@ -75,8 +75,9 @@ export class AuthenticationService {
     return updatePassword(this.auth.currentUser, newPassword);
   }
 
-  logout(){
-    signOut(this.auth);
+  async logout(){
+    await signOut(this.auth);
+    window.location.reload()
 
   }
 

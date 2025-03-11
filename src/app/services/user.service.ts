@@ -15,32 +15,67 @@ export class UserService {
   private firestoreService = inject(FirestoreService);
   private router = inject(Router);
   private webService = inject(WebService);
+  private user: User;
+  private userProfile: Models.Auth.UserProfile;
 
   private userSubject = new BehaviorSubject<User | null>(null); // Estado del usuario
   user$ = this.userSubject.asObservable(); // Observable para los componentes
 
-  private loginStatus: 'login' | 'not-login' = 'not-login'; // Estado del usuario
+  private loginStatus: 'login' | 'not-login' ; // Estado del usuario
+  // private login: 'login' | 'not-login'; // Estado del usuario
 
   constructor() {
     console.log('UserService inicializado');
 
+
+
+    this.getState();
+  }
+
+  subscribe(){
     this.authenticationService.authState.subscribe(user => {
       console.log('Estado de autenticación cambiado:', user);
       this.userSubject.next(user); // Actualiza el estado global
 
       if (user) {
         this.loginStatus = 'login';
+        this.user = user;
         this.getUserProfile(user.uid);
       } else {
         this.loginStatus = 'not-login';
+        this.user = null;
       }
     });
+
   }
 
   /** Obtiene el usuario actual sin suscribirse */
   getUser(): User | null {
     return this.userSubject.value;
   }
+  isLogin() {
+    return new Promise<boolean>( async (resolve) => {
+      console.log('isLogin');
+
+      const user = await this.getState();
+      // console.log('first, user', user)
+      if (user) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    })
+  }
+
+  // async isLogin(){
+  //   const user = await this.getState();
+  //   if(user){
+  //     return true;
+  //   }
+  //   else{
+  //     return false;
+  //   }
+  // }
 
   /** Obtiene el estado del usuario sin crear nuevas suscripciones */
   async getState(): Promise<User | null> {
@@ -48,11 +83,13 @@ export class UserService {
       return this.getUser();
     }
 
+
     const user = await firstValueFrom(this.authenticationService.authState);
     this.userSubject.next(user);
 
     if (user) {
       this.loginStatus = 'login';
+      this.user = user;
       this.getUserProfile(user.uid);
     } else {
       this.loginStatus = 'not-login';
@@ -61,21 +98,60 @@ export class UserService {
     return user;
   }
 
+//   getState() {
+//     return new Promise<User>((resolve) => {
+//         if (this.login) {
+//           resolve(this.user);
+//           return;
+//         }
+//         this.authenticationService.authState.subscribe( res => {
+//           if (res) {
+//             console.log('res first ->', res)
+//             this.user = res;
+//             this.login = 'login';
+//             console.log('authState -> ', this.user);
+//             // this.user.getIdToken().then( token => {
+//             //   // console.log('token -> ', token);
+//             //   this.webService.token = token;
+//             // });
+//             // this.getRol();
+//             if (!this.userProfile) {
+//               this.getUserProfile(res.uid);
+//             }
+//           } else {
+//             this.user = null
+//             this.login = 'not-login';
+//           }
+//           resolve(this.user);
+//         });
+//     })
+// }
+
   /** Obtiene el perfil del usuario desde Firestore */
-  private async getUserProfile(uid: string) {
-    const response = await this.firestoreService.getDocument<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`);
+  async getUserProfile(uid: string) {
+    if (this.userProfile) {
+      return this.userProfile;
+    } else{
 
-    if (response.exists()) {
-      const userProfile = response.data();
+      const response = await this.firestoreService.getDocument<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`);
 
-      // Sincronizar email si es diferente
-      if (userProfile.email !== this.getUser()?.email) {
-        console.log('Sincronizando email...');
-        await this.firestoreService.updateDocument(`${Models.Auth.PathUsers}/${uid}`, { email: this.getUser()?.email });
+      if (response.exists()) {
+        this.userProfile = response.data();
+
+        // Sincronizar email si es diferente
+        if (this.userProfile.email !== this.getUser()?.email) {
+          console.log('Sincronizando email...');
+          const updateDoc = { email: this.getUser()?.email }
+          await this.firestoreService.updateDocument(`${Models.Auth.PathUsers}/${uid}`, updateDoc );
+        }
+      } else {
+        // Redirigir al usuario a completar su registro si no tiene perfil
+        this.router.navigate(['/user/completar-registro']);
+
       }
-    } else {
-      // Redirigir al usuario a completar su registro si no tiene perfil
-      this.router.navigate(['/user/completar-registro']);
+      return this.userProfile;
+
     }
-  }
+    }
+
 }

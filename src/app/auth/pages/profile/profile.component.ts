@@ -6,6 +6,7 @@ import { updateDoc } from '@angular/fire/firestore';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {User} from '@angular/fire/auth'
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +25,7 @@ export class ProfileComponent  implements OnInit {
 
   private authenticationService  = inject(AuthenticationService);
   private firestoreService = inject(FirestoreService);
+  private userService = inject(UserService)
   private fb = inject(FormBuilder)
   private router = inject(Router)
 
@@ -65,35 +67,47 @@ export class ProfileComponent  implements OnInit {
 
   constructor() {
     this.loading = true;
-    this.authenticationService.authState.subscribe(res => {
-      console.log('res ->', res);
-      if(res){
-        this.user = res
-        this.correoVerificado = res.emailVerified;
-        console.log('user ->', this.user)
-        this.getDatosProfile(res.uid);
+    this.user = this.userService.getUser();
+    this.getDatosProfile(this.user.uid);
 
-      }else{
-        this.user = null;
-      }
-      this.loading = false;
-    })
+
+
+
+    // this.authenticationService.authState.subscribe(res => {
+    //   console.log('res ->', res);
+    //   if(res){
+    //     this.user = res
+    //     this.correoVerificado = res.emailVerified;
+    //     console.log('user ->', this.user)
+    //     this.getDatosProfile(res.uid);
+
+    //   }else{
+    //     this.user = null;
+    //   }
+    //   this.loading = false;
+    // })
    }
 
-  ngOnInit() {}
+  ngOnInit() {
+    
+  }
 
-  getDatosProfile(uid : string){
+  async getDatosProfile(uid : string){
     console.log('getDatosProfile ->', uid)
-    this.firestoreService.getDocumentChanges<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`).subscribe((res)=>{
-      this.isAdmin = false;
-      if(res){
-        this.userProfile = res;
-        console.log('this.userProfile ->', this.userProfile);
-        if(this.userProfile.roles?.admin == true){
-          this.isAdmin = true;
-        }
-      }
-    });
+    // this.firestoreService.getDocumentChanges<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`).subscribe((res)=>{
+    //   this.isAdmin = false;
+    //   if(res){
+    //     this.userProfile = res;
+    //     console.log('this.userProfile ->', this.userProfile);
+    //     if(this.userProfile.roles?.admin == true){
+    //       this.isAdmin = true;
+    //     }
+    //   }
+    // });
+
+    this.userProfile = await this.userService.getUserProfile(uid);
+    this.loading = false;
+
   }
 
   async actualizarPerfil(){

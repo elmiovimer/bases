@@ -8,6 +8,7 @@ import { FirestoreService } from '../../../firebase/firestore.service';
 import {User} from '@angular/fire/auth'
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -56,7 +57,7 @@ export class LoginComponent  implements OnInit, OnDestroy {
   //   name : string,
   //   photoURL : string
   // }
-  user: User;
+  user: User = this.authenticationService.getCurrentUser();
 
   enableResetPassword : boolean = false;
   enableLoginWithEmailAndPassword : boolean = false;
@@ -74,6 +75,8 @@ export class LoginComponent  implements OnInit, OnDestroy {
       this.providers[1].color = this.isDarkMode? 'white' : 'black'
       this.providers[1].textColor = !this.isDarkMode? 'white' : 'black'
     });
+
+    // this.user = this.authenticationService.getCurrentUser();
 
 
 
@@ -121,7 +124,7 @@ export class LoginComponent  implements OnInit, OnDestroy {
         const data = this.datosForm.value
         this.authenticationService.login(data.email, data.password);
         setTimeout(()=>{
-          this.router.navigate(['user','profile'])
+          this.router.navigate(['auth'])
         },500);
 
       }catch(e){ console.log('error en login() ->', e)}
