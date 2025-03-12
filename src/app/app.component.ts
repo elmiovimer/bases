@@ -8,6 +8,8 @@ import { UserService } from './services/user.service';
 import { signInWithCustomToken } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
 import * as all from 'ionicons/icons';
+import { helloWorld } from '../../functions/src/index';
+import { WebService } from './services/web.service';
 
 
 @Component({
@@ -20,6 +22,7 @@ export class AppComponent {
   private firestoreService = inject(FirestoreService);
   private authenticationService = inject(AuthenticationService);
   private userService : UserService = inject(UserService)
+  private webService : WebService = inject(WebService)
 
 
 
@@ -27,6 +30,8 @@ export class AppComponent {
 
   constructor() {
     addIcons( all );
+    this.helloWorld();
+    // this.helloWorldGet();
   //   fetch('/__/auth/handler')
   // .then(response => console.log(response))
   // .catch(error => console.error('Error:', error));
@@ -122,6 +127,21 @@ export class AppComponent {
 
   }
 
+  async helloWorld(){
+    const url = 'http://127.0.0.1:5001/basesfire-devserv/us-central1';
+    const data = {
+      id: '4sMQTT6natSNmmMAskcibIs86QE2',
+      path: 'Users'
+    }
+    const response = await this.webService.request('POST',url, 'helloWorld', data);
+    console.log('response ->', response)
+  }
+  async helloWorldGet(){
+    const url = 'http://127.0.0.1:5001/basesfire-devserv/us-central1';
+    const response = await this.webService.request('GET',url, 'helloWorld');
+    console.log('first')
+    console.log('response ->', response)
+  }
 
 }
 

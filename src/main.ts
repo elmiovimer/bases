@@ -9,6 +9,7 @@ import { importProvidersFrom } from '@angular/core';
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import {getFunctions, provideFunctions} from '@angular/fire/functions'
 import { getAuth, indexedDBLocalPersistence, initializeAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from './environments/environment';
 import { Capacitor } from '@capacitor/core';
@@ -46,9 +47,10 @@ bootstrapApplication(AppComponent, {
     //esta es la importacion correcta para la version de angular 18 en adelante
     // provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+    provideFunctions(() => getFunctions()),
     // provideAuth(()=> getAuth()),
 
   ],
-  
+
 });

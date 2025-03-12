@@ -1,0 +1,163 @@
+📌 ¿Qué es una Promesa en JavaScript?
+Una promesa en JavaScript es un objeto que representa un valor que aún no está disponible pero que lo estará en el futuro, ya sea con éxito o con un error.
+
+Es muy útil para manejar operaciones asíncronas, como:
+
+Llamadas a APIs.
+Lectura/escritura de archivos.
+Consultas a bases de datos.
+Temporizadores.
+🚀 1. Creando una Promesa
+Una promesa se crea con el constructor new Promise(), el cual recibe una función con dos parámetros:
+
+resolve(): Llama a esta función cuando la operación tiene éxito.
+reject(): Llama a esta función cuando ocurre un error.
+Ejemplo simple de una promesa que se resuelve en 2 segundos:
+
+javascript
+Copy
+Edit
+const miPromesa = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("✅ ¡Operación exitosa!");
+    }, 2000);
+});
+
+console.log("Esperando...");
+
+miPromesa.then((resultado) => {
+    console.log(resultado);
+});
+🔹 ¿Qué sucede aquí?
+Se imprime "Esperando..." en la consola.
+Se inicia un setTimeout() de 2 segundos.
+Cuando pasan los 2 segundos, se ejecuta resolve().
+La promesa se resuelve y ejecuta el código dentro de .then().
+Salida en la consola:
+
+scss
+Copy
+Edit
+Esperando...
+✅ ¡Operación exitosa!  (después de 2 segundos)
+🛑 2. Manejo de Errores con .catch()
+Si algo falla, podemos usar reject() para manejar errores.
+
+javascript
+Copy
+Edit
+const promesaConError = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        reject("❌ Ocurrió un error");
+    }, 2000);
+});
+
+promesaConError
+    .then((resultado) => {
+        console.log(resultado);
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
+🔹 ¿Qué sucede aquí?
+La promesa falla después de 2 segundos porque llamamos a reject().
+Como no se llamó resolve(), el .then() no se ejecuta.
+Se ejecuta .catch(), que captura el error.
+Salida en la consola:
+
+vbnet
+Copy
+Edit
+Error: ❌ Ocurrió un error
+⏳ 3. Encadenamiento de Promesas (then() en cadena)
+Podemos encadenar .then() para manejar múltiples pasos.
+
+javascript
+Copy
+Edit
+const promesaEncadenada = new Promise((resolve) => {
+    setTimeout(() => {
+        resolve(5);
+    }, 1000);
+});
+
+promesaEncadenada
+    .then((numero) => {
+        console.log("Número inicial:", numero);
+        return numero * 2;  // El valor retornado se pasa al siguiente `.then()`
+    })
+    .then((nuevoNumero) => {
+        console.log("Doble del número:", nuevoNumero);
+        return nuevoNumero * 3;
+    })
+    .then((resultadoFinal) => {
+        console.log("Triple del resultado anterior:", resultadoFinal);
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
+🔹 ¿Qué sucede aquí?
+La promesa se resuelve con el número 5 después de 1 segundo.
+El primer .then() recibe 5 y devuelve 10 (doble).
+El segundo .then() recibe 10 y devuelve 30 (triple).
+Se imprime cada valor.
+Salida en la consola:
+
+less
+Copy
+Edit
+Número inicial: 5
+Doble del número: 10
+Triple del resultado anterior: 30
+🔄 4. Convertir una Función en una Promesa
+Si queremos que una función devuelva una promesa, podemos hacerlo así:
+
+javascript
+Copy
+Edit
+function esperar(ms) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(`Esperé ${ms} ms`), ms);
+    });
+}
+
+esperar(2000).then((mensaje) => console.log(mensaje));
+Después de 2 segundos, se imprime:
+
+yaml
+Copy
+Edit
+Esperé 2000 ms
+⚡ 5. Promesas con async y await
+En lugar de usar .then(), podemos usar async y await para escribir código más limpio.
+
+javascript
+Copy
+Edit
+async function obtenerDatos() {
+    console.log("Buscando datos...");
+
+    const resultado = await new Promise((resolve) => {
+        setTimeout(() => resolve("📡 Datos recibidos"), 2000);
+    });
+
+    console.log(resultado);
+}
+
+obtenerDatos();
+🔹 ¿Qué sucede aquí?
+Se imprime "Buscando datos...".
+await pausa la ejecución hasta que la promesa se resuelve.
+Después de 2 segundos, se imprime "📡 Datos recibidos".
+Salida en la consola:
+
+java
+Copy
+Edit
+Buscando datos...
+📡 Datos recibidos  (después de 2 segundos)
+🚀 Conclusión
+✔ Una promesa representa una operación asíncrona que puede tener éxito o fallar.
+✔ Se maneja con .then() para capturar el resultado y .catch() para manejar errores.
+✔ Se pueden encadenar .then() para realizar varias operaciones secuenciales.
+✔ Con async/await, podemos hacer que el código parezca síncrono sin perder el beneficio de la asincronía.

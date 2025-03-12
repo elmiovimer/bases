@@ -32,12 +32,15 @@ export class UsersComponent  implements OnInit {
     this.authenticationService.authState.subscribe(res =>{
       if (res) {
         this.getMoreUsers();
+        console.log('token',res.getIdTokenResult())
 
       }
     })
    }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
 
   async buscarPorEmail(){
     if (this.formEmail.valid) {

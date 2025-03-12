@@ -22,6 +22,7 @@ export namespace ModelsAuth{
       client? : boolean;
       driver? : boolean;
     }
+    date? : Date;
   }
 
 

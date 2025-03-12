@@ -73,6 +73,8 @@ export class ProfileComponent  implements OnInit {
 
 
 
+
+
     // this.authenticationService.authState.subscribe(res => {
     //   console.log('res ->', res);
     //   if(res){
@@ -89,7 +91,9 @@ export class ProfileComponent  implements OnInit {
    }
 
   ngOnInit() {
-    
+    console.log('userProfile ->', this.userProfile)
+    // console.log('userProfile ->', this.userService.)
+
   }
 
   async getDatosProfile(uid : string){
@@ -106,6 +110,9 @@ export class ProfileComponent  implements OnInit {
     // });
 
     this.userProfile = await this.userService.getUserProfile(uid);
+    if(this.userProfile.roles['admin']){
+      this.isAdmin = true;
+    }
     this.loading = false;
 
   }
@@ -253,5 +260,7 @@ export class ProfileComponent  implements OnInit {
     }
 
   }
+
+  
 
 }

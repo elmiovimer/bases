@@ -123,9 +123,9 @@ export class LoginComponent  implements OnInit, OnDestroy {
       try{
         const data = this.datosForm.value
         this.authenticationService.login(data.email, data.password);
-        setTimeout(()=>{
-          this.router.navigate(['auth'])
-        },500);
+        // setTimeout(()=>{
+        //   this.router.navigate(['auth'])
+        // },500);
 
       }catch(e){ console.log('error en login() ->', e)}
     }

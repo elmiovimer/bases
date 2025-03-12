@@ -11,6 +11,8 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
+
+
   private authenticationService = inject(AuthenticationService);
   private firestoreService = inject(FirestoreService);
   private router = inject(Router);
@@ -29,10 +31,10 @@ export class UserService {
 
 
 
-    this.getState();
+    this.subscribirse();
   }
 
-  subscribe(){
+  subscribirse(){
     this.authenticationService.authState.subscribe(user => {
       console.log('Estado de autenticación cambiado:', user);
       this.userSubject.next(user); // Actualiza el estado global
@@ -40,6 +42,12 @@ export class UserService {
       if (user) {
         this.loginStatus = 'login';
         this.user = user;
+        this.user.getIdToken().then(
+          token =>{
+            console.log('token -> ', token)
+            this.webService.token = token;
+          }
+        )
         this.getUserProfile(user.uid);
       } else {
         this.loginStatus = 'not-login';
@@ -79,6 +87,7 @@ export class UserService {
 
   /** Obtiene el estado del usuario sin crear nuevas suscripciones */
   async getState(): Promise<User | null> {
+    console.log('getState')
     if (this.loginStatus === 'login') {
       return this.getUser();
     }
@@ -89,6 +98,7 @@ export class UserService {
 
     if (user) {
       this.loginStatus = 'login';
+      console.log(this.loginStatus)
       this.user = user;
       this.getUserProfile(user.uid);
     } else {
@@ -129,6 +139,7 @@ export class UserService {
 
   /** Obtiene el perfil del usuario desde Firestore */
   async getUserProfile(uid: string) {
+    console.log('getUserProfile', this.userProfile)
     if (this.userProfile) {
       return this.userProfile;
     } else{
@@ -136,6 +147,7 @@ export class UserService {
       const response = await this.firestoreService.getDocument<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`);
 
       if (response.exists()) {
+        console.log('response.data() ->',response.data())
         this.userProfile = response.data();
 
         // Sincronizar email si es diferente
@@ -149,6 +161,7 @@ export class UserService {
         this.router.navigate(['/user/completar-registro']);
 
       }
+      console.log('userProfile ->', this.userProfile)
       return this.userProfile;
 
     }
