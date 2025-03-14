@@ -13,13 +13,27 @@
 
         <h3><i>Welcome</i></h3>
 
-        @if(user.photoURL){
+        @if(userProfile.photo){
+
           <div>
-            @if(!newPhoto){
-              <img [src]="user.photoURL ">
+            <ion-avatar>
+                <!-- <img alt="https://ionicframework.com/docs/img/demos/avatar.svg" [src]="userProfile.photo" /> -->
+                <ion-img
+              [src]="userProfile.photo"
+              alt="The Wisconsin State Capitol building in Madison, WI at night"
+            ></ion-img>
+            </ion-avatar>
+
+            <!-- @if(!newPhoto){
+              <ion-avatar>
+                <img [src]="user.photoURL ">
+              </ion-avatar>
+
             } @else{
-              <img [src]="newPhoto">
-            }
+              <ion-avatar>
+                <img [src]="newPhoto">
+              </ion-avatar>
+            } -->
           </div>
 
 
@@ -217,7 +231,7 @@
           <div style="text-align: right">
             <button [routerLink]="['/auth/admin']">administrar usuarios</button>
           </div>
-         
+
         }
 
 

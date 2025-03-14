@@ -32,6 +32,7 @@ export class ProfileComponent  implements OnInit {
   correoVerificado : boolean = false;
 
   user: User;
+
   userProfile : Models.Auth.UserProfile;
 
   newName : string = '';
@@ -261,6 +262,6 @@ export class ProfileComponent  implements OnInit {
 
   }
 
-  
+
 
 }

@@ -12,7 +12,7 @@ import { CompletarRegistroComponent } from './pages/completar-registro/completar
 import { RequestLoginComponent } from './pages/request-login/request-login.component';
 import { UsersComponent } from './pages/users/users.component';
 import { IonContent, IonHeader, IonToolbar, IonTitle,
-  IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon, IonItemGroup, IonItemDivider, IonButtons } from '@ionic/angular/standalone';
+  IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon, IonItemGroup, IonItemDivider, IonButtons, IonImg } from '@ionic/angular/standalone';
 import { UserDetailComponent } from './componentes/user-detail/user-detail.component';
 
 
@@ -36,7 +36,7 @@ import { UserDetailComponent } from './componentes/user-detail/user-detail.compo
     FormsModule,
     SharedModule,
     IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon,
-    IonItemGroup, IonItemDivider, IonButtons 
+    IonItemGroup, IonItemDivider, IonButtons, IonImg
 
 
 

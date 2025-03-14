@@ -15,6 +15,7 @@ export class FirestoreService {
   private firestore: Firestore = inject(Firestore);
 
   constructor() {
+    console.log('firestoreService inicializado')
    }
 
    // CRUDS -> CREATE - READ - UPDATE - DELETE

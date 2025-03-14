@@ -9,6 +9,7 @@ import { IonContent, IonFooter, IonHeader, IonToolbar, IonTitle, IonButton, IonI
 import { RouterModule } from '@angular/router';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { ShortPipe } from './pipes/short.pipe';
+import { FiletourlPipe } from './pipes/filetourl.pipe';
 
 
 
@@ -18,6 +19,8 @@ import { ShortPipe } from './pipes/short.pipe';
     FooterComponent,
     HeaderComponent,
     CartDetailsComponent,
+    FiletourlPipe,
+    ShortPipe
   ],
   imports: [
     CommonModule,
@@ -25,11 +28,14 @@ import { ShortPipe } from './pipes/short.pipe';
     IonContent, IonFooter, IonHeader, IonToolbar,IonTitle, IonButton, IonIcon,
     RouterModule,
     // IconNotificationsComponent,
+    
   ],
   exports: [
     FooterComponent,
     HeaderComponent,
     CartDetailsComponent,
+    FiletourlPipe,
+    ShortPipe
   ],
 })
 export class SharedModule { }

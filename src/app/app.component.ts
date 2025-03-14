@@ -10,6 +10,7 @@ import { addIcons } from 'ionicons';
 import * as all from 'ionicons/icons';
 import { helloWorld } from '../../functions/src/index';
 import { WebService } from './services/web.service';
+import { StorageService } from './firebase/storage.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class AppComponent {
   private firestoreService = inject(FirestoreService);
   private authenticationService = inject(AuthenticationService);
   private userService : UserService = inject(UserService)
-  private webService : WebService = inject(WebService)
+  private webService : WebService = inject(WebService);
+  private storageService : StorageService = inject(StorageService);
 
 
 
@@ -30,7 +32,8 @@ export class AppComponent {
 
   constructor() {
     addIcons( all );
-    this.helloWorld();
+    // this.storageService.uploadString()
+    // this.helloWorld();
     // this.helloWorldGet();
   //   fetch('/__/auth/handler')
   // .then(response => console.log(response))

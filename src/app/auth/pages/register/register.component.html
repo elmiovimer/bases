@@ -1,3 +1,4 @@
+
 <ion-content>
   <div style="text-align: center;">
     <p>SIGN UP</p>
@@ -69,6 +70,38 @@
       <div class="input-content">
        <label for="">Photo:</label>
        <input placeholder="Photo"  formControlName="photo">
+
+
+       <!-- subir directamente -->
+       <h1>Storage</h1>
+       <label for="fileUpload">Choose a File</label>
+       <input id="fileUpload" type="file" #upload multiple accept="image/*">
+       <button (click)="uploadFile(upload)">Upload {{progress}}%</button>
+      <strong>---------------------</strong>
+
+       <!-- previsualizar antes de subir -->
+       <input #inputFile (change)="viewPreview(inputFile)" type="file" style="display: none;">
+       <div>
+         <button type="button" (click)="inputFile.click()" >cargar archivo</button>
+         <button type="button" (click)="save()">guardar</button>
+
+       </div>
+       @if(file){
+        <ion-img
+          [src]="file | filetourl"
+          alt="The Wisconsin State Capitol building in Madison, WI at night"
+        ></ion-img>
+
+
+       }
+
+       @if (video) {
+        <video width="320" height="240" controls>
+          <source [src]="video" type="video/mp4">
+          <!-- <source src="movie.ogg" type="video/ogg"> -->
+          Your browser does not support the video tag.
+        </video>
+       }
 
 
      </div>

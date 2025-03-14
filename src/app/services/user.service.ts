@@ -19,6 +19,7 @@ export class UserService {
   private webService = inject(WebService);
   private user: User;
   private userProfile: Models.Auth.UserProfile;
+  private roles : any;
 
   private userSubject = new BehaviorSubject<User | null>(null); // Estado del usuario
   user$ = this.userSubject.asObservable(); // Observable para los componentes
@@ -137,6 +138,22 @@ export class UserService {
 //     })
 // }
 
+async getRol() {
+  if (this.roles) {
+    return this.roles
+  }
+  if (this.user) {
+    const tokenResult = await this.user.getIdTokenResult(true);
+    // console.log('tokenResult -> ', tokenResult);
+    const claims: any = tokenResult.claims;
+    if (claims.roles) {
+      this.roles = claims.roles;
+      return claims.roles
+    }
+  }
+  return null;
+}
+
   /** Obtiene el perfil del usuario desde Firestore */
   async getUserProfile(uid: string) {
     console.log('getUserProfile', this.userProfile)
@@ -166,5 +183,7 @@ export class UserService {
 
     }
     }
+
+
 
 }

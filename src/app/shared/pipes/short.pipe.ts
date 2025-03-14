@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'short',
-  standalone: true
+  standalone: false
 })
 export class ShortPipe implements PipeTransform {
 
@@ -14,7 +14,7 @@ export class ShortPipe implements PipeTransform {
      }
     if (value.length > maxLength) {
       return value.slice(0,maxLength) + ` ...`;
-      
+
     }
     return value;
   }

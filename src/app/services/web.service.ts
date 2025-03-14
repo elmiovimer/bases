@@ -21,6 +21,7 @@ export class WebService {
   type: string = 'GET';
 
   constructor() {
+    console.log('webService inicializado')
   }
 
   async login(username: string, password: string){

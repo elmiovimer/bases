@@ -21,6 +21,7 @@ export class AuthenticationService {
   userID : string
 
   constructor() {
+    console.log('AuthenticationService inicializado')
     this.auth.languageCode = 'es';
 
    }
