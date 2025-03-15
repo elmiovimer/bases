@@ -16,6 +16,8 @@ import { environment } from './environments/environment';
 import { Capacitor } from '@capacitor/core';
 import { initializeFirestore, persistentLocalCache } from 'firebase/firestore';
 import { LogLevel, setLogLevel } from '@angular/fire';
+import { FileSaverModule } from 'ngx-filesaver';
+import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 
 
 // setLogLevel(LogLevel.VERBOSE);
@@ -50,7 +52,11 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
     provideFunctions(() => getFunctions()),
-    provideStorage((() => getStorage()))
+    provideStorage((() => getStorage())),
+    provideAnalytics(() => getAnalytics()),
+    ScreenTrackingService,
+    UserTrackingService,
+    FileSaverModule
 
   ],
 

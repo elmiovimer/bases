@@ -67,34 +67,73 @@
       </div>
 
       <!-- foto -->
+
+      <div class="input-content">
+        <label for="">Photo:</label>
+        <button type="button" (click)="inputImage.click()">subir foto</button>
+        <input #inputImage (change)="viewPreview(inputImage)" type="file" style="display: none;">
+        @if(image){
+          <ion-img
+            [src]="image "
+          ></ion-img>
+  
+  
+         }
+      </div>
+
+
+      
+      <!-- enviar -->
+      <div style="text-align: center;">
+        <button type="submit" [disabled]="loading">
+          <strong>Register</strong>
+        </button>
+      </div>
       <div class="input-content">
        <label for="">Photo:</label>
        <input placeholder="Photo"  formControlName="photo">
-
-
+    
+    
        <!-- subir directamente -->
        <h1>Storage</h1>
        <label for="fileUpload">Choose a File</label>
-       <input id="fileUpload" type="file" #upload multiple accept="image/*">
+       <input id="fileUpload" type="file" #upload accept="image/*">
        <button (click)="uploadFile(upload)">Upload {{progress}}%</button>
       <strong>---------------------</strong>
-
+    
        <!-- previsualizar antes de subir -->
-       <input #inputFile (change)="viewPreview(inputFile)" type="file" style="display: none;">
+       <input #inputFile2 (change)="viewPreview(inputFile2)" type="file" style="display: none;">
        <div>
-         <button type="button" (click)="inputFile.click()" >cargar archivo</button>
+         <button type="button" (click)="inputFile2.click()" >cargar archivo</button>
          <button type="button" (click)="save()">guardar</button>
-
+    
+         <button (click)="download(fileFirestore)" >descargar</button>
+         <button (click)="getMoreFiles()">get more files</button>
+    
        </div>
+       <!-- mostrando archivos y carpetas -->
+        <div>
+          @for (folder of this.results?.prefixes; track $index) {
+            <div>
+              <button class="folder">{{folder.name}}</button>
+            </div>
+          }
+          
+          @for (item of this.results?.items; track $index) {
+            <div>
+              <button class ='item'>{{item.name}}</button>
+            </div>
+          }
+        </div>
        @if(file){
         <ion-img
-          [src]="file | filetourl"
+          [src]="file "
           alt="The Wisconsin State Capitol building in Madison, WI at night"
         ></ion-img>
-
-
+    
+    
        }
-
+    
        @if (video) {
         <video width="320" height="240" controls>
           <source [src]="video" type="video/mp4">
@@ -102,16 +141,9 @@
           Your browser does not support the video tag.
         </video>
        }
-
-
+    
+    
      </div>
-
-       <!-- enviar -->
-        <div style="text-align: center;">
-          <button type="submit" [disabled]="loading">
-            <strong>Register</strong>
-          </button>
-        </div>
     </form>
   </div>
   <div style="text-align: center;">

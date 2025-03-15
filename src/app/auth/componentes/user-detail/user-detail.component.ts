@@ -1,4 +1,4 @@
-import { Request } from './../../../../../functions/node_modules/@types/express-serve-static-core/index.d';
+// import { Request } from 
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Models } from 'src/app/models/models';

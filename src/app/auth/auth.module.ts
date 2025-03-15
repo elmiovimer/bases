@@ -35,6 +35,7 @@ import { UserDetailComponent } from './componentes/user-detail/user-detail.compo
     ReactiveFormsModule,
     FormsModule,
     SharedModule,
+    
     IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon,
     IonItemGroup, IonItemDivider, IonButtons, IonImg
 

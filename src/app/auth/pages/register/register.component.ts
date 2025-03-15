@@ -6,6 +6,8 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/firebase/storage.service';
 import { Browser } from '@capacitor/browser';
+import { folder } from 'ionicons/icons';
+import { ListResult } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +16,7 @@ import { Browser } from '@capacitor/browser';
   standalone: false
 })
 export class RegisterComponent  implements OnInit {
+  //#region variables
   private fb = inject(FormBuilder);
   private authenticationService = inject(AuthenticationService);
   private firestoreService = inject(FirestoreService);
@@ -26,6 +29,7 @@ export class RegisterComponent  implements OnInit {
   file: File;
   image: string;
   video: string;
+  fileFirestore : string = 'gs://basesfire-devserv.firebasestorage.app/PhotosPerfil/Screenshot 2025-03-13 at 10.36.39 AM.png'
 
   datosForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -35,11 +39,43 @@ export class RegisterComponent  implements OnInit {
     age: [null]
   })
   loading : boolean = false;
+  results : ListResult;
+
+  //#endregion
 
   constructor() { }
 
-  ngOnInit() {}
+  async ngOnInit() {
+    // const folder = 'PhotosPerfil';
+    // const res = await this.storageService.listAll(folder);
+    // console.log('res ->', res);
+  }
 
+  async getMoreFiles(){
+    console.log('getMoreFiles');
+    const path = 'PhotosPerfil';
+    let pageToken = null;
+    if (this.results) {
+      if (!this.results.nextPageToken) {
+        return;
+        
+      }
+      pageToken = this.results.nextPageToken;
+
+    }
+    const res = await this.storageService.list(path, 1, pageToken);
+    // if (this.results) {
+    //   res.items.unshift(...this.results.items);
+    //   res.prefixes.unshift(...this.results.prefixes)
+      
+    // }
+    this.results = res;
+    console.log('this.results ->', this.results)
+  }
+
+  descargar(item : string = ''){
+    
+  }
   async registrarse(){
     this.loading = true;
     console.log('datosForm ->', this.datosForm);
@@ -49,11 +85,16 @@ export class RegisterComponent  implements OnInit {
       try{
         const res = await this.authenticationService.createUser(data.email, data.password);
         // console.log('user ->', user);
+        //guardar foto
+        data.photo = await this.subirFoto(res.user.uid);
         let profile: Models.Auth.UPdatePforileI = {
           displayName : data.name,
           photoURL : data.photo
         };
         await this.authenticationService.updateProfile(profile);
+
+
+        //
         const datosUser : Models.Auth.UserProfile = {
           name: data.name,
           photo: data.photo,
@@ -69,6 +110,21 @@ export class RegisterComponent  implements OnInit {
 
       }catch(e){ console.log('registrarse error ->', e)}
     }
+
+  }
+
+  async subirFoto(uid : string){
+   if (this.file) {
+    
+    const snap = await this.storageService.uploadFile(`PhotosPerfil/${uid}`, this.file.name, this.file);
+    console.log('snap -> ', snap);
+    // const url = await this.storageService.getDownloadUrl(snap.ref.fullPath)
+    
+    return snap.ref.fullPath;
+
+    
+   } 
+   return '';
 
   }
 
@@ -118,8 +174,10 @@ export class RegisterComponent  implements OnInit {
       const files = input.files;
       console.log('viewPreview files -> ', files);
       this.file = files.item(0);
+      // this.datosForm.controls['photo'].value = files.item(0)
+      // this.form.controls['dept'].value = selected.id;
 
-      // this.image = URL.createObjectURL(files.item(0));
+      this.image = URL.createObjectURL(files.item(0));
       // this.image = await this.storageService.fileToBase64(files.item(0));
 
       console.log('this.image ->' , this.image)
@@ -133,9 +191,9 @@ export class RegisterComponent  implements OnInit {
     Browser.open({url})
   }
 
-  // download(path: string) {
-  //   this.storageService.downloadFile(path)
-  // }
+  download(path: string) {
+    this.storageService.downloadFile(path)
+  }
 
   async save(){
     const folder = 'PhotosPerfil';

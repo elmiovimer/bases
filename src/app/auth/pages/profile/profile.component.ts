@@ -7,6 +7,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {User} from '@angular/fire/auth'
 import { UserService } from 'src/app/services/user.service';
+import { StorageService } from 'src/app/firebase/storage.service';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +26,7 @@ export class ProfileComponent  implements OnInit {
 
   private authenticationService  = inject(AuthenticationService);
   private firestoreService = inject(FirestoreService);
+  private storageService = inject(StorageService)
   private userService = inject(UserService)
   private fb = inject(FormBuilder)
   private router = inject(Router)
@@ -94,6 +96,11 @@ export class ProfileComponent  implements OnInit {
   ngOnInit() {
     console.log('userProfile ->', this.userProfile)
     // console.log('userProfile ->', this.userService.)
+
+  }
+
+  descargarFoto(){
+    this.storageService.downloadFile(this.userProfile.photo);
 
   }
 

@@ -19,10 +19,14 @@
             <ion-avatar>
                 <!-- <img alt="https://ionicframework.com/docs/img/demos/avatar.svg" [src]="userProfile.photo" /> -->
                 <ion-img
-              [src]="userProfile.photo"
+              [src]="userProfile.photo | reftourl | async"
               alt="The Wisconsin State Capitol building in Madison, WI at night"
             ></ion-img>
             </ion-avatar>
+            <div>
+              <button (click)="descargarFoto()">descargar</button>
+              <button>editar</button>
+            </div>
 
             <!-- @if(!newPhoto){
               <ion-avatar>

@@ -28,3 +28,10 @@ type in cmd
   -firebase deploy --only hosting
 
 
+
+gcloud
+gsutil cors set cors.json gs://basesfire-devserv.firebasestorage.app
+
+npm install file-saver ngx-filesaver
+
+

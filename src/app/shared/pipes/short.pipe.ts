@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'short',
-  standalone: false
+  standalone: true
 })
 export class ShortPipe implements PipeTransform {
 

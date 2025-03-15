@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { ShortPipe } from './pipes/short.pipe';
 import { FiletourlPipe } from './pipes/filetourl.pipe';
+import { ReftourlPipe } from './pipes/reftourl.pipe';
 
 
 
@@ -20,7 +21,9 @@ import { FiletourlPipe } from './pipes/filetourl.pipe';
     HeaderComponent,
     CartDetailsComponent,
     FiletourlPipe,
-    ShortPipe
+    ReftourlPipe
+
+    
   ],
   imports: [
     CommonModule,
@@ -35,7 +38,9 @@ import { FiletourlPipe } from './pipes/filetourl.pipe';
     HeaderComponent,
     CartDetailsComponent,
     FiletourlPipe,
-    ShortPipe
+    ReftourlPipe
+    
+
   ],
 })
 export class SharedModule { }

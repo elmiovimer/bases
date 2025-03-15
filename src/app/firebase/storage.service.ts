@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { getDownloadURL, ref, Storage, uploadBytes, uploadBytesResumable, uploadString } from '@angular/fire/storage';
+import { deleteObject, getBlob, getDownloadURL, getMetadata, list, listAll, ref, Storage, uploadBytes, uploadBytesResumable, uploadString } from '@angular/fire/storage';
 import { Subject } from 'rxjs';
+import { FileSaverService } from 'ngx-filesaver';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ import { Subject } from 'rxjs';
 export class StorageService {
 
   private storage : Storage = inject(Storage);
+  private fileSaverService : FileSaverService = inject(FileSaverService);
 
   constructor() {
     console.log('storageService inicializado')
@@ -23,6 +25,8 @@ export class StorageService {
     return snapshot;
 
    }
+
+   
 
   uploadString(folder : string, name : string, text : string){
     const storageref = ref(this.storage, `${folder}/${name}`);
@@ -84,25 +88,50 @@ export class StorageService {
 
   }
 
-  // async downloadFile(path: string) {
-  //   console.log('saveFile');
-  //   const storageRef = ref(this.storage, path);
-  //   const blob = await getBlob(storageRef)
-  //   console.log('blob -> ', blob);
+  listAll(path : string){
+    const storageRef = ref(this.storage, path);
+    return listAll(storageRef)
 
-  //   // dos opciones
+  }
 
-  //   // 1.- creando un elemento <a></a>
-  //   // const urlLocal = URL.createObjectURL(blob);
-  //   // const link = document.createElement("a");
-  //   // link.href = urlLocal;
-  //   // link.download = storageRef.name;
-  //   // link.click();
-  //   // link.remove();
+  getMetadata(path : string){
+    const storageRef = ref(this.storage, path);
+    return getMetadata(storageRef);
 
-  //   // usando un servio
-  //   this.fileSaverService.save(blob, storageRef.name);
-  // }
+  }
+
+  list(path : string, maxResults : number = 100, pageToken : any = null){
+    const storageRef = ref(this.storage, path);
+    const opts :any = {maxResults}
+    if (pageToken) {
+      opts.pageToken = pageToken
+      
+    }
+    return list(storageRef, opts)
+
+  }
+
+
+  async downloadFile(path: string) {
+    console.log('saveFile');
+    const storageRef = ref(this.storage, path);
+    const blob = await getBlob(storageRef)
+    console.log('blob -> ', blob);
+    // return;
+
+    // dos opciones
+
+    // 1.- creando un elemento <a></a>
+    // const urlLocal = URL.createObjectURL(blob);
+    // const link = document.createElement("a");
+    // link.href = urlLocal;
+    // link.download = storageRef.name;
+    // link.click();
+    // link.remove();
+
+    // 2.- usando un servio
+    this.fileSaverService.save(blob, storageRef.name);
+  }
 
   fileToBase64(file : File){
     return new Promise<string>((resolve, reject) => {
@@ -112,6 +141,11 @@ export class StorageService {
         resolve(reader.result as string);
       };
     });
+  }
+
+  deleteFile(path: string) {
+    const storageRef = ref(this.storage, path); 
+    return deleteObject(storageRef)
   }
 }
 
