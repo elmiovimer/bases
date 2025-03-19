@@ -19,12 +19,47 @@ export class AuthenticationService {
   firestoreService = inject(FirestoreService);
   router = inject(Router)
   userID : string
+  providers : Models.Auth.ProviderLoginI[] = [{
+          name: `Iniciar sesion con Correo y contrasena`,
+          id: 'password',
+          color: '#BD9B60',
+          textColor: 'white',
+          icon: 'mail',
+          enable : true
+    }];
 
   constructor() {
     console.log('AuthenticationService inicializado')
     this.auth.languageCode = 'es';
+    this.getProviderLoginButtons();
 
    }
+
+  async getProviderLoginButtons(){
+    console.log('getProviderLoginButtons');
+    const path = 'ProviderLogin'
+    if (!this.providers) {
+      console.log('first')
+      return;
+
+    }
+    const response = await this.firestoreService.getDocuments<Models.Auth.ProviderLoginI>(`${path}`);
+    if(response){
+      response.forEach(element => {
+        console.log('response ->',element.data());
+        if (element.data().enable) {
+
+          this.providers.push(element.data())
+
+        }
+
+
+      });
+
+    }
+
+
+  }
 
   async createUser(email : string, password : string){
     const user = await createUserWithEmailAndPassword(this.auth, email, password);
@@ -146,14 +181,10 @@ async loginWithTokenOfprovider(providerId : string, token : string){
   };
   console.log('credentials -> ', credential);
   if(credential){
-    try {
-      await signInWithCredential(this.auth, credential);
-
-    } catch (error) {
-      console.log('error en loginwithtokenofprovider ->', error)
-
-    }
+     return await signInWithCredential(this.auth, credential);
   }
+  return null;
+
 }
 async loginWithProviderByPopup(providerId : string){
   console.log('loginwithprovider')
@@ -245,14 +276,15 @@ async loginWithProviderByPopup(providerId : string){
         // const link = `http://localhost:4200/user/request-login?provider=${providerId}&intentId=${id}`;
 
         const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
-        console.log('link ->', link)
+        // console.log('link ->', link)
         await Browser.open({ url: link });
         // this.router.navigate(['/user/request-login'], {queryParams: {intentId: queryParams.intentId}});
         // this.router.navigate([link]);
 
 
       } catch (error) {
-        console.log('error en getTokenOfProvider() ->', error)
+        console.log('error en getTokenOfProvider() ->', error);
+        resolve(null);
 
       }
     });

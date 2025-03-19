@@ -37,6 +37,8 @@ export namespace ModelsAuth{
     id: IdProviderLogin;
     color: string;
     textColor: string;
+    icon? : string;
+    enable : boolean;
   }
   export type IdProviderLogin = 'password' | 'google' | 'facebook' | 'apple'
   export type Rol = 'admin' | 'client' | 'driver'

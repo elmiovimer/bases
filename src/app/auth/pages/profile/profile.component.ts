@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, Input } from '@angular/core';
+import { IonModal } from '@ionic/angular/standalone';
+import { Component, inject, OnInit, Input, ViewChild } from '@angular/core';
 import { AuthenticationService } from 'src/app/firebase/authentication.service';
 import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Models } from 'src/app/models/models';
@@ -8,6 +9,7 @@ import { Router } from '@angular/router';
 import {User} from '@angular/fire/auth'
 import { UserService } from 'src/app/services/user.service';
 import { StorageService } from 'src/app/firebase/storage.service';
+import { InteractionsService } from '../../../services/interactions.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +18,11 @@ import { StorageService } from 'src/app/firebase/storage.service';
   standalone: false,
 })
 export class ProfileComponent  implements OnInit {
+
+  @ViewChild('modalEditInfo') modalEditInfo: IonModal;
+  titleModal : string;
+  opcModal: 'email' | 'photo' | 'name' | 'password';
+
   isSame = (input: FormControl)=>{
     // console.log('input ->', input.value);
     if(this.formCambiarPassword?.value.newPassword != input?.value){
@@ -30,6 +37,7 @@ export class ProfileComponent  implements OnInit {
   private userService = inject(UserService)
   private fb = inject(FormBuilder)
   private router = inject(Router)
+  private interactionsService : InteractionsService = inject(InteractionsService);
 
   correoVerificado : boolean = false;
 
@@ -93,6 +101,35 @@ export class ProfileComponent  implements OnInit {
     // })
    }
 
+   selectOpcModal(opc : 'email' | 'photo' | 'name' | 'password'){
+    this.opcModal = opc;
+    if (this.opcModal == 'email') {
+      this.titleModal = 'Cambiar Correo';
+
+    }
+    if (this.opcModal == 'photo') {
+      this.titleModal = 'Cambiar foto'
+
+    }
+    if (this.opcModal == 'name') {
+      this.titleModal = 'Cambiar nombre';
+      this.newName = this.user.displayName;
+
+    }
+    if (this.opcModal == 'password') {
+      this.titleModal = 'Cambiar Contraseña'
+
+    }
+    this.modalEditInfo.isOpen = true;
+   }
+
+  salir(){
+    this.authenticationService.logout();
+  //  this.datosForm.controls['email'].setValue('');
+  //  this.datosForm.controls['password'].setValue('');
+    this.user = null;
+
+  }
   ngOnInit() {
     console.log('userProfile ->', this.userProfile)
     // console.log('userProfile ->', this.userService.)
@@ -151,7 +188,11 @@ export class ProfileComponent  implements OnInit {
   }
 
   async enviarCorreo(){
+    this.interactionsService.showLoading("Enviando correo...");
     await this.authenticationService.sendEmailVerification();
+    this.interactionsService.dismissLoading();
+    await this.interactionsService.showAlert("Importante",
+      "Te hemos enviado un enlace de verificacion a tu correo");
     console.log('correo enviado -> comprueba tu correo',);
   }
 

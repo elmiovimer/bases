@@ -11,11 +11,13 @@ import { guards } from '../shared/guards/guards';
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [guards.notLogin('/auth/profile')]
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [guards.notLogin('/auth/profile')]
   },
   {
     path: 'register',

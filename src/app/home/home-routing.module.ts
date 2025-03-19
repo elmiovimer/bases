@@ -6,7 +6,7 @@ import { guards } from '../shared/guards/guards';
 
 const routes: Routes = [
   {
-    path:'', component: HomeComponent, canActivate: [guards.isLogin('auth')]
+    path:'', component: HomeComponent, 
   },
 
 

@@ -38,3 +38,25 @@
 
 
 @import 'theme/variables';
+
+
+//para centralizar el contenido en la pantalla
+.content-center{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+//para quitar el efecto de letras mayusculas
+ion-button{
+  text-transform: unset !important;
+  letter-spacing: unset !important;
+}
+
+//para que el sie menu sea mas pequeno
+ion-split-pane{
+  --side-max-with: 100 !important;
+  --side-width: 100 !important;
+}

@@ -11,8 +11,10 @@ import { SharedModule } from '../shared/shared.module';
 import { CompletarRegistroComponent } from './pages/completar-registro/completar-registro.component';
 import { RequestLoginComponent } from './pages/request-login/request-login.component';
 import { UsersComponent } from './pages/users/users.component';
-import { IonContent, IonHeader, IonToolbar, IonTitle,
-  IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon, IonItemGroup, IonItemDivider, IonButtons, IonImg } from '@ionic/angular/standalone';
+import { IonContent, IonInput, IonHeader, IonToolbar, IonTitle,
+  IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon, IonItemGroup,
+  IonItemDivider, IonButtons, IonImg, IonBackButton, IonGrid, IonRow, IonCol,
+  IonInputPasswordToggle, IonModal, IonSpinner, IonListHeader, IonChip, IonAccordionGroup, IonAccordion } from '@ionic/angular/standalone';
 import { UserDetailComponent } from './componentes/user-detail/user-detail.component';
 
 
@@ -35,14 +37,17 @@ import { UserDetailComponent } from './componentes/user-detail/user-detail.compo
     ReactiveFormsModule,
     FormsModule,
     SharedModule,
-    
-    IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon,
-    IonItemGroup, IonItemDivider, IonButtons, IonImg
+
+    IonContent, IonInput, IonHeader, IonToolbar, IonTitle, IonButton, IonList, IonItem, IonLabel, IonAvatar, IonIcon,
+    IonItemGroup, IonItemDivider, IonButtons, IonImg, IonSpinner, IonListHeader,
+    IonBackButton, IonRow, IonCol, IonGrid, IonInputPasswordToggle, IonModal, IonChip, IonAccordionGroup, IonAccordion
 
 
 
 
 
+
+    //
 
   ]
 })

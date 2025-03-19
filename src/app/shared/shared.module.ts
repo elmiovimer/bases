@@ -5,7 +5,9 @@ import { HeaderComponent } from './components/header/header.component';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { IconNotificationsComponent } from '../notifications/components/icon-notifications/icon-notifications.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { IonContent, IonFooter, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonFooter, IonIcon, IonInput, IonHeader, IonToolbar, IonTitle,
+  IonButton, IonList, IonItem, IonLabel, IonAvatar, IonItemGroup,
+  IonItemDivider, IonButtons, IonImg, IonBackButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { ShortPipe } from './pipes/short.pipe';
@@ -23,15 +25,17 @@ import { ReftourlPipe } from './pipes/reftourl.pipe';
     FiletourlPipe,
     ReftourlPipe
 
-    
+
   ],
   imports: [
     CommonModule,
     NotificationsModule,
-    IonContent, IonFooter, IonHeader, IonToolbar,IonTitle, IonButton, IonIcon,
+    IonContent, IonFooter, IonIcon, IonInput, IonHeader, IonToolbar, IonTitle,
+  IonButton, IonList, IonItem, IonLabel, IonAvatar, IonItemGroup,
+  IonItemDivider, IonButtons, IonImg, IonBackButton, IonGrid, IonRow, IonCol,
     RouterModule,
     // IconNotificationsComponent,
-    
+
   ],
   exports: [
     FooterComponent,
@@ -39,7 +43,7 @@ import { ReftourlPipe } from './pipes/reftourl.pipe';
     CartDetailsComponent,
     FiletourlPipe,
     ReftourlPipe
-    
+
 
   ],
 })

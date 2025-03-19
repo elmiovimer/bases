@@ -21,6 +21,7 @@ export class UserService {
   private userProfile: Models.Auth.UserProfile;
   private roles : any;
 
+
   private userSubject = new BehaviorSubject<User | null>(null); // Estado del usuario
   user$ = this.userSubject.asObservable(); // Observable para los componentes
 
@@ -29,6 +30,7 @@ export class UserService {
 
   constructor() {
     console.log('UserService inicializado');
+
 
 
 
@@ -57,6 +59,8 @@ export class UserService {
     });
 
   }
+
+
 
   /** Obtiene el usuario actual sin suscribirse */
   getUser(): User | null {

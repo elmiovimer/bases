@@ -6,6 +6,7 @@ import { Models } from 'src/app/models/models';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
 import { GoogleAuthProvider, OAuthProvider } from '@angular/fire/auth';
+import { InteractionsService } from 'src/app/services/interactions.service';
 
 @Component({
   selector: 'app-request-login',
@@ -19,9 +20,9 @@ export class RequestLoginComponent  implements OnInit {
   userService: UserService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private interactionServices : InteractionsService = inject(InteractionsService);
 
-
-  message : string = 'procesando...';
+  // message : string = 'procesando...';
 
   constructor() {
 
@@ -35,20 +36,12 @@ export class RequestLoginComponent  implements OnInit {
 
   ngOnInit() {}
 
-  getQueryParams() {
+  async getQueryParams() {
     const queryParams: any = this.route.snapshot.queryParams;
     console.log('queryParams -> ', queryParams);
     if (queryParams.provider && queryParams.intentId) {
-      // if(!environment.production){ //esto esta sin probar y es para ser utilizado solo en pruebas
-      //   const res = this.authenticationService.loginWithProviderByPopup(provider);
-      //   this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
-      //   this.getTokenOfProviderbyPopup(res);
-      // return;
-
-
-
-      // }
       const provider = queryParams.provider;
+      await this.interactionServices.showLoading('Procesando...')
       this.authenticationService.loginWithProvider(provider)
       this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
     }
@@ -56,10 +49,11 @@ export class RequestLoginComponent  implements OnInit {
   }
 
   async getTokenOfProvider() {
+    await this.interactionServices.showLoading('Redirigiendo...')
       const result =  await this.authenticationService.getRedirectResult();
       console.log('getRedirectResult -> ', result);
       if (result) {
-        this.message = 'redirigiendo...'
+        // this.message = 'redirigiendo...'
         const credential = OAuthProvider.credentialFromResult(result)
         console.log('credential -> ', credential);
         const token = credential.idToken ? credential.idToken : credential.accessToken;
@@ -70,11 +64,13 @@ export class RequestLoginComponent  implements OnInit {
 
       console.log('getRedirectResult -> ', result);
       if (result) {
-        this.message = 'redirigiendo...'
+        // this.message = 'redirigiendo...'
         const credential = OAuthProvider.credentialFromResult(result)
         console.log('credential -> ', credential);
         const token = credential.idToken ? credential.idToken : credential.accessToken;
         this.saveToken(token);
+      }else{
+        this.interactionServices.dismissLoading()
       }
   }
 

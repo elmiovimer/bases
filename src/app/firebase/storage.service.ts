@@ -26,7 +26,7 @@ export class StorageService {
 
    }
 
-   
+
 
   uploadString(folder : string, name : string, text : string){
     const storageref = ref(this.storage, `${folder}/${name}`);
@@ -105,7 +105,7 @@ export class StorageService {
     const opts :any = {maxResults}
     if (pageToken) {
       opts.pageToken = pageToken
-      
+
     }
     return list(storageRef, opts)
 
@@ -144,7 +144,7 @@ export class StorageService {
   }
 
   deleteFile(path: string) {
-    const storageRef = ref(this.storage, path); 
+    const storageRef = ref(this.storage, path);
     return deleteObject(storageRef)
   }
 }

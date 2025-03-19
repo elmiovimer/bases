@@ -7,10 +7,10 @@ import { AuthenticationService } from './firebase/authentication.service';
 import { UserService } from './services/user.service';
 import { signInWithCustomToken } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
-import * as all from 'ionicons/icons';
 import { helloWorld } from '../../functions/src/index';
 import { WebService } from './services/web.service';
 import { StorageService } from './firebase/storage.service';
+import { IoniciconsService } from './services/ionicicons.service';
 
 
 @Component({
@@ -25,13 +25,14 @@ export class AppComponent {
   private userService : UserService = inject(UserService)
   private webService : WebService = inject(WebService);
   private storageService : StorageService = inject(StorageService);
+  private ionicIconsService : IoniciconsService = inject(IoniciconsService);
 
 
 
   // console.log(products);
 
   constructor() {
-    addIcons( all );
+    // this.ionicIconsService.loadAllIcons();
     // this.storageService.uploadString()
     // this.helloWorld();
     // this.helloWorldGet();

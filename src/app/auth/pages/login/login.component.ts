@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectorRef, viewChild, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/firebase/authentication.service';
@@ -9,6 +9,9 @@ import {User} from '@angular/fire/auth'
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { UserService } from '../../../services/user.service';
+import { IonModal } from '@ionic/angular/standalone';
+import { InteractionsService } from 'src/app/services/interactions.service';
+import { error } from 'firebase-functions/logger';
 
 @Component({
   selector: 'app-login',
@@ -18,39 +21,18 @@ import { UserService } from '../../../services/user.service';
 })
 export class LoginComponent  implements OnInit, OnDestroy {
 
+  @ViewChild('modalRecuperarPassword') modalRecuperarPassword : IonModal;
+
   private fb = inject(FormBuilder);
   private authenticationService = inject(AuthenticationService);
+  private interactionServices = inject(InteractionsService)
   private firestoreService = inject(FirestoreService)
-  private router = inject(Router)
+  private router = inject(Router);
   loading : boolean = false;
-  subscription : Subscription;
-  isDarkMode : boolean = false;
-  providers : Models.Auth.ProviderLoginI[] = [
-    {
-      name: 'iniciar sesion con Google',
-      id: 'google',
-      color: '#20a3df',
-      textColor: 'white'
-    },
-    {
-      name: 'iniciar sesion con Facebook',
-      id: 'facebook',
-      color: '#20a3df',
-      textColor: 'white'
-    },
-    {
-      name: 'iniciar sesion con Apple',
-      id: 'apple',
-      color: 'black',
-      textColor: 'white'
-    },
-    {
-      name: 'iniciar sesion con Correo y contrasena',
-      id: 'password',
-      color: '#BD9B60',
-      textColor: 'white'
-    },
-  ]
+  // inicio : string = ' ';
+  // subscription : Subscription;
+  isDarkMode : boolean = window.matchMedia('(prefers-color-scheme : dark)').matches;
+  providers : Models.Auth.ProviderLoginI[];
   form : Models.Auth.DatosLogin;
   // user : {
   //   email: string,
@@ -67,13 +49,45 @@ export class LoginComponent  implements OnInit, OnDestroy {
     password: ['', Validators.required],
   })
 
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+  });
+
+  reestablecerPasswordForm = this.fb.group({
+    email:['', [Validators.required, Validators.email]]
+  })
+
   constructor() {
+
     this.loading = true;
+    this.providers = this.authenticationService.providers;
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       this.isDarkMode = event.matches;
       console.log('Modo oscuro cambiado:', this.isDarkMode);
-      this.providers[1].color = this.isDarkMode? 'white' : 'black'
-      this.providers[1].textColor = !this.isDarkMode? 'white' : 'black'
+      if (this.isDarkMode && this.providers) {
+        //todo este codigo no funciona
+        const newProviders = this.providers.map((provider)   =>{
+          // provider.color === 'black' ? {...provider, color : 'white', textColor : 'black'} : provider
+
+          if (provider.color === 'black') {
+            provider = {
+              ...provider,
+              color : 'white',
+              textColor : 'black'
+            }
+            console.log(provider)
+
+          }
+        }
+
+        );
+        // this.providers = newProviders
+
+
+      }
+      // this.providers[1].color = this.isDarkMode? 'white' : 'black'
+      // this.providers[1].textColor = !this.isDarkMode? 'white' : 'black'
     });
 
     // this.user = this.authenticationService.getCurrentUser();
@@ -82,17 +96,7 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
 
     console.log('user',this.user)
-   this.subscription =  this.authenticationService.authState.subscribe(res =>{
-      console.log('user ->',res)
-      if(res){
-        // this.authenticationService.verifyUserEmail(res.uid);
-        this.user = res
-      }else
-      {
-        this.user = null;
-      }
 
-    })
 
 
     this.loading = false
@@ -102,11 +106,13 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
   }
 
+
+
   ngOnInit() {
     this.initForm();
   }
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    // this.subscription.unsubscribe();
   }
 
 
@@ -118,31 +124,57 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
   }
 
-  login(){
-    if(this.datosForm.valid){
+  async loginWithEmail(){
+    if (this.loginForm.valid) {
+      const data = this.loginForm.value;
+      await this.interactionServices.showLoading('Ingresando...')
       try{
-        const data = this.datosForm.value
-        this.authenticationService.login(data.email, data.password);
-        // setTimeout(()=>{
-        //   this.router.navigate(['auth'])
-        // },500);
+        const response = await this.authenticationService.login(data.email, data.password);
+        this.interactionServices.dismissLoading();
+        const user = response.user;
+        this.interactionServices.showToast(`Bienvenido ${user.displayName}`);
+        setTimeout(()=>{
+          // this.router.navigate(['/auth/profile']);
+          this.router.navigate(['auth','profile'], {replaceUrl : true})
+        })
 
-      }catch(e){ console.log('error en login() ->', e)}
+      }catch (error){
+        console.log('login error ->', error);
+        this.interactionServices.dismissLoading();
+        this.interactionServices.showAlert('Error', 'Credenciales inválidas')
+
+      }
+
     }
-
-
   }
 
+  // login(){
+  //   if(this.datosForm.valid){
+  //     try{
+  //       const data = this.datosForm.value
+  //       this.authenticationService.login(data.email, data.password);
+  //       setTimeout(()=>{
+  //         this.router.navigate(['/auth/profile'])
+  //       },500);
+
+  //     }catch(e){ console.log('error en login() ->', e)}
+  //   }
+
+
+  // }
+
   async resetPassword(){
-    this.loading = true;
-    console.log('this.datosForm ->', this.datosForm)
-    if(this.datosForm.controls.email.valid){
-      const data = this.datosForm.value.email;
-      console.log('data ->', data);
+    console.log(this.reestablecerPasswordForm.valid)
+    if(this.reestablecerPasswordForm.valid){
+      console.log('reset password')
+      const data = this.reestablecerPasswordForm.value;
+      this.modalRecuperarPassword.dismiss();
+      await this.interactionServices.showLoading('Enviando Correo...');
       try {
-        await this.authenticationService.sendPasswordResetEmail(data);
-        this.enableResetPassword = false;
-        console.log('te hemos enviado un correo para reestablecer tu contraseña')
+        await this.authenticationService.sendPasswordResetEmail(data.email);
+        this.interactionServices.dismissLoading();
+        this.interactionServices.showAlert('Importante', 'Te hemos enviado un correo para reestablecer tu contraseña');
+        console.log('te hemos enviado un correo para reestablecer tu contraseña');
 
       } catch (error) {
         console.log('error en resetPassword() ->', error)
@@ -151,46 +183,45 @@ export class LoginComponent  implements OnInit, OnDestroy {
     }
   }
 
-  salir(){
-    this.authenticationService.logout();
-    this.datosForm.controls['email'].setValue('');
-    this.datosForm.controls['password'].setValue('');
-    this.user = null;
 
-  }
+
+
 
   async loginWithProvider(provider : Models.Auth.ProviderLoginI){
-    console.log('loginwithprovider')
-    if(provider.id =='password'){
+    if (provider.id == 'password') {
+      console.log('login with provideres')
       this.enableLoginWithEmailAndPassword = true;
       return;
+
     }
-
+    console.log(Capacitor.isNativePlatform())
     // if (Capacitor.isNativePlatform()) {
+      await this.interactionServices.showLoading('Procesando...');
       const token = await this.authenticationService.getTokenOfProvider(provider.id);
-      console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
+      const response = await this.authenticationService.loginWithTokenOfprovider(provider.id, token);
+      this.interactionServices.dismissLoading();
+      if (response) {
+        const user = response.user;
+        this.interactionServices.showToast(`Bienvenido ${user.displayName}`)
+        setTimeout(() => {
+          this.router.navigate(['auth', 'profile'], {replaceUrl: true});
 
-      await this.authenticationService.loginWithTokenOfprovider(provider.id, token);
-      // this.router.navigate(['user', 'profile']);
+        }, 200);
+
+      }
 
     // } else{
-      // this.authenticationService.loginWithProvider(provider.id);
+    //   // console.log('first')
+    //   await this.interactionServices.showLoading(`Procesando...`);
+    //   await this.authenticationService.loginWithProvider(provider.id);
+    //   this.interactionServices.dismissLoading();
+    //   setTimeout(() => {
+    //     this.router.navigate(['auth', 'profile'], {replaceUrl: true});
 
+    //   }, 200);
     // }
-
-
-
   }
 
-  ionViewDidEnter(){
-    console.log('ionviewDidEnter login');
-    const user = this.authenticationService.getCurrentUser();
-    if (user) {
-      this.user= user
-
-    }
-
-  }
 
 
 
