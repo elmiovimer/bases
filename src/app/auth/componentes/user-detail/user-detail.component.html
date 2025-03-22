@@ -34,62 +34,7 @@
 
     }
 
-    <ion-item lines="none" class="contenedor">
-      <!-- foto -->
-      <div  >
-        <ion-avatar>
-          @if (user.photo) {
-            <img alt="https://ionicframework.com/docs/img/demos/avatar.svg" [src]="user.photo" />
-
-          }@else {
-            <img alt="foto" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-
-          }
-        </ion-avatar>
-      </div>
-      <!-- usuario -->
-      <div class="">
-        <p><ion-label>{{user.name}}</ion-label></p>
-        <p><ion-label>{{user.email}}</ion-label></p>
-        <p><ion-label>{{user.age}} years</ion-label></p>
-
-      </div>
-      @if(enableAgregarRol){
-        <div>
-          <ion-button (click)="enableAgregarRol = false">cancel</ion-button>
-          <ion-button (click)="actualizarRol()">save</ion-button>
-
-
-        </div>
-
-      } @else {
-        <ion-button slot="end" (click)="enableAgregarRol = !enableAgregarRol">
-          <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
-        </ion-button>
-
-      }
-
-
-    </ion-item>
-
-    @if(enableAgregarRol){
-        <ion-item >
-        <!-- <ion-buttons slot="start"> -->
-          @for (item of rolesUser; track $index) {
-            <ion-button (click)="selectRol(item)" [ngClass]="{'rol-selected':item.enable, 'rol-noSelected':!item.enable}">{{item.rol}}</ion-button>
-          }
-
-        <!-- </ion-buttons> -->
-        <!-- <button (click)="setClaim()"> -->
-          <!-- <strong>setClaim</strong> -->
-        <!-- </button> -->
-        <button (click)="helloWorld()">
-          <strong>helloWorld</strong>
-        </button>
-
-      </ion-item>
-      }
-
+   
 
 
 

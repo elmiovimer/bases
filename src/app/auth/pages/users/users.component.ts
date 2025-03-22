@@ -3,6 +3,7 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Models } from 'src/app/models/models';
 import { AuthenticationService } from '../../../firebase/authentication.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { response } from 'express';
 
 @Component({
   selector: 'app-users',
@@ -46,8 +47,32 @@ export class UsersComponent  implements OnInit {
 
 
 
-  onSearchChange(ev : any){
-    console.log(ev)
+  async onSearchChange(ev : any){
+    this.enableBuscarPorEmail = true;
+    console.log('onSerachChange ->',ev);
+    const email = ev.detail.value;
+    this.users = null;
+    this.cargando = null;
+    this.enableMore = false;
+    // const extras : Models.Firebase.extrasQuery = {
+    //   parcialSearch : true,
+    // }
+
+
+    const path = Models.Auth.PathUsers;
+    let q : Models.Firebase.whereQuery[];
+    q =[['email', '==', email]];
+    const response = await this.firestoreServices.getDocumentsQuery<Models.Auth.UserProfile>(path, q);
+    this.cargando = false;
+    console.log('response ->', response)
+    if (!response.empty) {
+      this.users = [];
+      response.forEach(item =>{
+        this.users.push(item.data())
+
+      })
+
+    }
   }
 
   async loadData(ev:any){
@@ -62,6 +87,8 @@ export class UsersComponent  implements OnInit {
       this.users = null;
       this.cargando = true;
       this.enableMore = false;
+
+
       const path = Models.Auth.PathUsers;
       let q : Models.Firebase.whereQuery[];
       q = [[`email`, `==`, data.email]];

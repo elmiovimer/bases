@@ -7,6 +7,7 @@ export namespace ModelsFirebase{
     directionSort?: 'asc' | 'desc',
     startAfter?: any,
     group? : boolean,
+    parcialSearch? : boolean
 
 
    }
@@ -17,11 +18,12 @@ export namespace ModelsFirebase{
     directionSort: 'asc',
     startAfter: null,
     group : false,
+    // parcialSearch : false
 
    }
 
    export type whereQuery = WhereFilterOp[] | string[] | any[]
 
-   
+
 
 }

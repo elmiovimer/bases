@@ -34,6 +34,8 @@ export class AppComponent {
   // console.log(products);
 
   constructor() {
+    // this.onSearchChange();
+
     // this.ionicIconsService.loadAllIcons();
     // this.storageService.uploadString()
     // this.helloWorld();
@@ -62,6 +64,23 @@ export class AppComponent {
 
   }
 
+  // async onSearchChange(){
+
+
+
+  //     const extras : Models.Firebase.extrasQuery = {
+  //       parcialSearch : true,
+  //     }
+
+
+  //     const path = Models.Auth.PathUsers;
+  //     let q : Models.Firebase.whereQuery[];
+  //     q =[['email', '==', 'fab']];
+  //     const response = await this.firestoreService.getDocumentsQuery<Models.Auth.UserProfile>(path, q, extras);
+
+  //     console.log('response ->', response)
+
+  //   }
   async test (){
     await this.authenticationService.loginWithTokenOfprovider('google', 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImJjNDAxN2U3MGE4MWM5NTMxY2YxYjY4MjY4M2Q5OThlNGY1NTg5MTkiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVmltZXIgRmFiaWFuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0xuckVqTTZ1clBFQ3ZSa01DZU5pWURUNEw1dXFiazNFc3NMV0E4dDh4X3VVYkRKcDQ9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmFzZXNmaXJlLWRldnNlcnYiLCJhdWQiOiJiYXNlc2ZpcmUtZGV2c2VydiIsImF1dGhfdGltZSI6MTc0MTA1MzMyNywidXNlcl9pZCI6IkZaMmtweGdmbHBYd2lEVlc5Y3h6N2Fmd1B5NjIiLCJzdWIiOiJGWjJrcHhnZmxwWHdpRFZXOWN4ejdhZndQeTYyIiwiaWF0IjoxNzQxMDUzMzI3LCJleHAiOjE3NDEwNTY5MjcsImVtYWlsIjoidmltZXJmYWJpYW5AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDk1MzY0MjI1NzQxNjI2NDU4NzQiXSwiZW1haWwiOlsidmltZXJmYWJpYW5AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.u_zTQslPqCIPSl9dFVNsMtRmEKVZ6Ili2Ui1LnFWE5EohDkV40wrlaStuSadwcQD7jeID7KiWkdYOe3zj13KpkEXHiMMoVZgGEG3NkMvqZ7xBa1QznR-gelquMKlFC6ZQdcsLqHyZEU_xQTZkQ6WTN1D9GVbdCZVkch-wIYQ78bswGknYridqitN8dVvxSbst35HUsnR73gWfqMbItXylCpmJgnOMU8t5oXCCnjGFklcg6iIrvYvZLY1P-sT08zEYCm5Vbis4zLOezPVJVm5-jj2vkyZU5FTzvt3iroSxGteDsUyEjEdiAgaOddc0t-LfiUDW8ABe6pMgYy7iOhwbA')
   }

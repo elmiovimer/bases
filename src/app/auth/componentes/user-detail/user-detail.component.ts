@@ -111,10 +111,10 @@ export class UserDetailComponent  implements OnInit {
       this.rolesSelected.push(rol)
     }
 
-    Object.keys(this.user.roles).forEach(key =>{
-      // this.rolesSelected.push(key)
-      console.log('key ->', key)
-    })
+    // Object.keys(this.user.roles).forEach(key =>{
+    //   // this.rolesSelected.push(key)
+    //   console.log('key ->', key)
+    // })
 
     // this.user.roles.forEach( rol =>{
     //   // this.rolesUser.push({rol, enable: this.user.roles[rol]})

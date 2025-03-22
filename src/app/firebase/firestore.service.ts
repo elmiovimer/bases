@@ -1,12 +1,12 @@
 import { observable } from './../../../node_modules/rxjs/src/internal/symbol/observable';
 import { name } from './../../../node_modules/@leichtgewicht/ip-codec/types/index.d';
 import { inject, Injectable, NgZone } from '@angular/core';
-import { DocumentSnapshot, getDoc, Firestore, addDoc, collection,QuerySnapshot, collectionData, where, collectionGroup, deleteDoc, doc, docData, getDocs, query, serverTimestamp, setDoc, updateDoc, or, WhereFilterOp, and, limit  } from '@angular/fire/firestore';
+import { DocumentSnapshot, getDoc, Firestore, addDoc, collection,QuerySnapshot, collectionData, where, collectionGroup, deleteDoc, doc, docData, getDocs, query, serverTimestamp, setDoc, updateDoc, or, WhereFilterOp, and, limit, startAt  } from '@angular/fire/firestore';
 // import {   } from 'firebase/firestore';
 import { Observable, timestamp } from 'rxjs';
 import { Models } from '../models/models';
 
-import { getAggregateFromServer, orderBy, startAfter } from 'firebase/firestore';
+import { endAt, getAggregateFromServer, orderBy, startAfter } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -150,6 +150,8 @@ export class FirestoreService {
           // extras: Parámetros adicionales para la consulta (limit, orderParam, directionSort, startAfter).
         // Retorno: QuerySnapshot<tipo>.
 
+
+
         let q = this.getQuery(path, querys, extras)
         return await getDocs(q) as QuerySnapshot<tipo>;
     }
@@ -217,6 +219,16 @@ export class FirestoreService {
     });
     let q = query(ref, or(...ors))
 
+     // 🔹 Agregar búsqueda parcial si `searchField` y `searchTerm` están definidos
+     if (extras.parcialSearch) {
+      const searchField = querys[0][0];
+      const searchTerm = querys[0][2]
+      // searchField && searchTerm
+      console.log('first', searchField)
+      console.log('first', searchTerm)
+      q = query(q, orderBy(searchField), startAt(searchTerm), endAt(searchTerm + '\uf8ff'));
+    }
+
     // limit
     if (extras.limit) {
       q = query(q, limit(extras.limit))
@@ -231,6 +243,8 @@ export class FirestoreService {
     if (extras.startAfter) {
       q = query(q, startAfter(extras.startAfter))
     }
+
+
 
     return q;
 
