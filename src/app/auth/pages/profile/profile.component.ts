@@ -20,18 +20,14 @@ import { response } from 'express';
 })
 export class ProfileComponent  implements OnInit {
 
+  //#region variables
+
   @ViewChild('modalEditInfo') modalEditInfo: IonModal;
-  // @ViewChild('files') file : HTMLInputElement;
+
   titleModal : string;
   opcModal: 'email' | 'photo' | 'name' | 'password';
 
-  isSame = (input: FormControl)=>{
-    // console.log('input ->', input.value);
-    if(this.formCambiarPassword?.value.newPassword != input?.value){
-      return {notSame : true}
-    }
-    return {}
-  }
+
 
   private authenticationService  = inject(AuthenticationService);
   private firestoreService = inject(FirestoreService);
@@ -41,27 +37,40 @@ export class ProfileComponent  implements OnInit {
   private router = inject(Router)
   private interactionsService : InteractionsService = inject(InteractionsService);
 
-  correoVerificado : boolean = false;
-
   user: User;
-
   userProfile : Models.Auth.UserProfile;
-
   newName : string = '';
   newPhoto : File;
   newAge : number = null;
   loading : boolean = false;
-  visible :boolean = false;
-  showButton : boolean = false
-
   enableActualizarEmail : boolean = false;
   enableActualizarPerfil : boolean = false;
   enableActualizarContrasena : boolean = false;
   enableBorrarCuenta : boolean = false;
   isAdmin : boolean = false
+
+  //#endregion
+
+
+  //#region forms
+
+  /**
+   * Metodo para ser usado como validaor en formbuilder.group
+ * Valida si la contraseña repetida es igual a la nueva contraseña.
+ * @param input Control de formulario con la contraseña repetida.
+ * @returns Un objeto de validación si las contraseñas no coinciden.
+ */
+  isSame = (input: FormControl)=>{
+    // console.log('input ->', input.value);
+    if(this.formCambiarPassword?.value.newPassword != input?.value){
+      return {notSame : true}
+    }
+    return {}
+  }
+
+
   formNewEmail = this.fb.group({
     email:['', [Validators.required, Validators.email]],
-    // password:['', [Validators.required]],
   })
 
   formCambiarPassword = this.fb.group({
@@ -71,40 +80,48 @@ export class ProfileComponent  implements OnInit {
 
   })
 
-
-
-
+  //#endregion
 
 
   constructor() {
-    // this.loading = true;
-    // this.user = this.userService.getUser();
     this.user = this.userService.getUser();
     this.getDatosProfile(this.user.uid);
-    console.log('datosProfile', this.userProfile)
-
-
-
-
-
-
-
-    // this.authenticationService.authState.subscribe(res => {
-    //   console.log('res ->', res);
-    //   if(res){
-    //     this.user = res
-    //     this.correoVerificado = res.emailVerified;
-    //     console.log('user ->', this.user)
-    //     this.getDatosProfile(res.uid);
-
-    //   }else{
-    //     this.user = null;
-    //   }
-    //   this.loading = false;
-    // })
    }
 
-   async viewPreview(input : HTMLInputElement){
+     /**
+ * Obtiene el perfil del usuario desde el servicio `UserService` y actualiza el estado de `isAdmin`.
+ * @param uid Identificador único del usuario.
+ */
+  async getDatosProfile(uid : string){
+    // console.log('getDatosProfile ->', uid)
+    this.userProfile = await this.userService.getUserProfile(uid);
+    // console.log('first', this.userProfile)
+    if(this.userProfile.roles['admin']){
+      this.isAdmin = true;
+    }
+    this.loading = false;
+
+  }
+
+
+  /**
+   * Selecciona la opción del modal y asigna el título correspondiente.
+   * @param opc Opción seleccionada del modal ('email', 'photo', 'name', 'password').
+   */
+  selectOpcModal(opc : 'email' | 'photo' | 'name' | 'password'){
+    this.opcModal = opc;
+    const titles = {
+      email: 'Cambiar Correo',
+      photo: 'Cambiar Foto',
+      name: 'Cambiar Nombre',
+      password: 'Cambiar Contraseña',
+    };
+    this.titleModal = titles[opc]
+    if (opc === 'name'){ this.newName = this.user.displayName}
+    this.modalEditInfo.isOpen = true;
+  }
+
+  async viewPreview(input : HTMLInputElement){
     console.log('input ->', input)
     if (input.files.length) {
       const files = input.files;
@@ -114,32 +131,8 @@ export class ProfileComponent  implements OnInit {
 
   }
 
-   selectOpcModal(opc : 'email' | 'photo' | 'name' | 'password'){
-    this.opcModal = opc;
-    if (this.opcModal == 'email') {
-      this.titleModal = 'Cambiar Correo';
-
-    }
-    if (this.opcModal == 'photo') {
-      this.titleModal = 'Cambiar foto'
-
-    }
-    if (this.opcModal == 'name') {
-      this.titleModal = 'Cambiar nombre';
-      this.newName = this.user.displayName;
-
-    }
-    if (this.opcModal == 'password') {
-      this.titleModal = 'Cambiar Contraseña'
-
-    }
-    this.modalEditInfo.isOpen = true;
-   }
-
   salir(){
     this.authenticationService.logout();
-  //  this.datosForm.controls['email'].setValue('');
-  //  this.datosForm.controls['password'].setValue('');
     this.user = null;
 
   }
@@ -207,27 +200,7 @@ export class ProfileComponent  implements OnInit {
 
   }
 
-  async getDatosProfile(uid : string){
-    console.log('getDatosProfile ->', uid)
-    // this.firestoreService.getDocumentChanges<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`).subscribe((res)=>{
-    //   this.isAdmin = false;
-    //   if(res){
-    //     this.userProfile = res;
-    //     console.log('this.userProfile ->', this.userProfile);
-    //     if(this.userProfile.roles?.admin == true){
-    //       this.isAdmin = true;
-    //     }
-    //   }
-    // });
 
-    this.userProfile = await this.userService.getUserProfile(uid);
-    console.log('first', this.userProfile)
-    if(this.userProfile.roles['admin']){
-      this.isAdmin = true;
-    }
-    this.loading = false;
-
-  }
 
   async actualizarPerfil(){
     let data : Models.Auth.UPdatePforileI = {};
@@ -330,24 +303,24 @@ export class ProfileComponent  implements OnInit {
 
   }
 
-  hideButton() {
-    // Esperamos un poco para verificar si el foco pasó al botón
-    setTimeout(() => {
-      const activeElement = document.activeElement as HTMLElement;
-      if (activeElement.tagName !== 'BUTTON') {
-        this.showButton = false;
-      }
-    }, 100);
-  }
+  // hideButton() {
+  //   // Esperamos un poco para verificar si el foco pasó al botón
+  //   setTimeout(() => {
+  //     const activeElement = document.activeElement as HTMLElement;
+  //     if (activeElement.tagName !== 'BUTTON') {
+  //       this.showButton = false;
+  //     }
+  //   }, 100);
+  // }
 
-  isEqual(input: FormControl){
-    console.log('input ->', input.value)
-    if(this.formCambiarPassword?.value?.newPassword != input?.value ){
-      return {notSame: true}
-    }
-    else
-      return {notSame: false}
-  }
+  // isEqual(input: FormControl){
+  //   console.log('input ->', input.value)
+  //   if(this.formCambiarPassword?.value?.newPassword != input?.value ){
+  //     return {notSame: true}
+  //   }
+  //   else
+  //     return {notSame: false}
+  // }
 
   async eliminarCuenta(){
     //preguntar al usuario si esta seguro de eliminar la cuenta

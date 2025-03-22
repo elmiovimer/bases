@@ -12,6 +12,7 @@ import { UserService } from '../../../services/user.service';
 import { IonModal } from '@ionic/angular/standalone';
 import { InteractionsService } from 'src/app/services/interactions.service';
 import { error } from 'firebase-functions/logger';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-login',
@@ -19,30 +20,19 @@ import { error } from 'firebase-functions/logger';
   styleUrls: ['./login.component.scss'],
   standalone: false
 })
-export class LoginComponent  implements OnInit, OnDestroy {
+export class LoginComponent  implements OnInit {
 
   @ViewChild('modalRecuperarPassword') modalRecuperarPassword : IonModal;
 
   private fb = inject(FormBuilder);
   private authenticationService = inject(AuthenticationService);
   private interactionServices = inject(InteractionsService);
-  private firestoreService = inject(FirestoreService);
   private userService = inject(UserService);
   private router = inject(Router);
-  loading : boolean = false;
-  // inicio : string = ' ';
-  // subscription : Subscription;
+  button : any;
+  buttonDark : any;
   isDarkMode : boolean = window.matchMedia('(prefers-color-scheme : dark)').matches;
   providers : Models.Auth.ProviderLoginI[];
-  form : Models.Auth.DatosLogin;
-  // user : {
-  //   email: string,
-  //   name : string,
-  //   photoURL : string
-  // }
-  user: User = this.authenticationService.getCurrentUser();
-
-  enableResetPassword : boolean = false;
   enableLoginWithEmailAndPassword : boolean = false;
 
   datosForm = this.fb.group({
@@ -64,6 +54,13 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
     try {
       this.providers = this.authenticationService.providers;
+      this.button = this.providers.find(provider => provider.id == 'apple');
+      this.buttonDark = {
+        ...this.button,
+        color: 'white',
+          textColor: 'black'
+
+      }
 
     } catch (error) {
       this.interactionServices.showAlert(`Importante`,`Es posible que no tengas conexion a internet. reinicia la aplicacion`)
@@ -74,64 +71,21 @@ export class LoginComponent  implements OnInit, OnDestroy {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       this.isDarkMode = event.matches;
       console.log('Modo oscuro cambiado:', this.isDarkMode);
-      if (this.isDarkMode && this.providers) {
-        //todo este codigo no funciona
-        const newProviders = this.providers.map((provider)   =>{
-          // provider.color === 'black' ? {...provider, color : 'white', textColor : 'black'} : provider
-
-          if (provider.color === 'black') {
-            provider = {
-              ...provider,
-              color : 'white',
-              textColor : 'black'
-            }
-            console.log(provider)
-
-          }
-        }
-
-        );
-        // this.providers = newProviders
 
 
-      }
-      // this.providers[1].color = this.isDarkMode? 'white' : 'black'
-      // this.providers[1].textColor = !this.isDarkMode? 'white' : 'black'
+
+        let index = this.providers.findIndex(provider => provider.id === 'apple')
+        this.providers[index] = this.isDarkMode? this.buttonDark : this.button;
+
     });
 
-    // this.user = this.authenticationService.getCurrentUser();
-
-
-
-
-    console.log('user',this.user)
-
-
-
-    this.loading = false
-
-
-
-
   }
 
 
 
-  ngOnInit() {
-    this.initForm();
-  }
-  ngOnDestroy(): void {
-    // this.subscription.unsubscribe();
-  }
+  ngOnInit() {}
 
 
-  initForm(){
-    this.form = {
-      email: '',
-      password: '',
-    }
-
-  }
 
   async loginWithEmail(){
     if (this.loginForm.valid) {
@@ -157,20 +111,6 @@ export class LoginComponent  implements OnInit, OnDestroy {
     }
   }
 
-  // login(){
-  //   if(this.datosForm.valid){
-  //     try{
-  //       const data = this.datosForm.value
-  //       this.authenticationService.login(data.email, data.password);
-  //       setTimeout(()=>{
-  //         this.router.navigate(['/auth/profile'])
-  //       },500);
-
-  //     }catch(e){ console.log('error en login() ->', e)}
-  //   }
-
-
-  // }
 
   async resetPassword(){
     console.log(this.reestablecerPasswordForm.valid)
@@ -194,8 +134,6 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
 
 
-
-
   async loginWithProvider(provider : Models.Auth.ProviderLoginI){
     if (provider.id == 'password') {
       console.log('login with provideres')
@@ -204,7 +142,7 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
     }
     console.log(Capacitor.isNativePlatform())
-    // if (Capacitor.isNativePlatform()) {
+    if (Capacitor.isNativePlatform()  || environment.production) {
       await this.interactionServices.showLoading('Procesando...');
       const token = await this.authenticationService.getTokenOfProvider(provider.id);
       const response = await this.authenticationService.loginWithTokenOfprovider(provider.id, token);
@@ -230,16 +168,16 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
       }
 
-    // } else{
-    //   // console.log('first')
-    //   await this.interactionServices.showLoading(`Procesando...`);
-    //   await this.authenticationService.loginWithProvider(provider.id);
-    //   this.interactionServices.dismissLoading();
-    //   setTimeout(() => {
-    //     this.router.navigate(['auth', 'profile'], {replaceUrl: true});
+    } else{
+      // console.log('first')
+      await this.interactionServices.showLoading(`Procesando...`);
+      await this.authenticationService.loginWithProvider(provider.id);
+      this.interactionServices.dismissLoading();
+      setTimeout(() => {
+        this.router.navigate(['auth', 'profile'], {replaceUrl: true});
 
-    //   }, 200);
-    // }
+      }, 200);
+    }
   }
 
 

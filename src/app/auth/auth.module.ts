@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './pages/login/login.component';
-import { LoginFormComponent } from './componentes/login-form/login-form.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -28,7 +27,6 @@ import { UserDetailComponent } from './componentes/user-detail/user-detail.compo
 @NgModule({
   declarations: [
     LoginComponent, //page
-    LoginFormComponent,
     RegisterComponent,  //component
     ProfileComponent, //page
     CompletarRegistroComponent, //page

@@ -7,6 +7,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StorageService } from '../../../firebase/storage.service';
 import { InteractionsService } from '../../../services/interactions.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-completar-registro',
@@ -19,9 +20,9 @@ export class CompletarRegistroComponent  implements OnInit {
   private firestoreService : FirestoreService = inject(FirestoreService);
   private storageService : StorageService = inject(StorageService);
   private interactionsService : InteractionsService = inject(InteractionsService);
+  private userService : UserService = inject(UserService)
   private fb : FormBuilder = inject(FormBuilder)
   private router = inject(Router)
-  loading : boolean = false;
   init: boolean = true;
 
   user: User
@@ -38,6 +39,9 @@ export class CompletarRegistroComponent  implements OnInit {
   constructor() {
 
     this.user = this.authenticationService.getCurrentUser();
+    const usuario = this.userService.getUser();
+    console.log('usuario ->', usuario)
+    console.log('this.user ->', this.user)
     const photo : any = this.user.photoURL;
     this.datosFormCompleteRegistro.setValue({
       email: this.user.email,
@@ -46,7 +50,6 @@ export class CompletarRegistroComponent  implements OnInit {
       age: null
 
     })
-    console.log('photo ->', photo)
    }
 
   ngOnInit() {}
@@ -56,6 +59,8 @@ export class CompletarRegistroComponent  implements OnInit {
       const files = input.files;
       console.log('viewPreview files -> ', files);
       this.file = files.item(0);
+      const img: any = files.item(0)
+        this.datosFormCompleteRegistro.controls.photo.setValue(img);
 
     }
 
@@ -63,23 +68,19 @@ export class CompletarRegistroComponent  implements OnInit {
 
   async subirFoto(uid : string, file : File){
      const snap = await this.storageService.uploadFile(`PhotosPerfil/${uid}`, file.name, file);
-     console.log('snap -> ', snap);
-     // const url = await this.storageService.getDownloadUrl(snap.ref.fullPath)
-
+    //  console.log('snap -> ', snap);
      return snap.ref.fullPath;
-
-
 
    }
 
   async completarRegistro(){
-    this.loading = true
-    await this.interactionsService.showLoading('Procesando...');
     console.log('datosDormCompleteRegistro ->', this.datosFormCompleteRegistro);
+
     if(this.datosFormCompleteRegistro.valid){
+      await this.interactionsService.showLoading('Procesando...');
+      console.log(this.datosFormCompleteRegistro.valid)
       const data = this.datosFormCompleteRegistro.value;
-      if(this.file){
-      }
+      data.photo = await this.subirFoto(this.user.uid, this.file)
 
       console.log('valid ->', data);
       try {
