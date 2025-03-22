@@ -7,11 +7,11 @@ export const routes: Routes = [
   //   loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   // },
 
-  {
-    path: 'home',
-    redirectTo: '',
-    pathMatch: 'full',
-  },
+  // {
+  //   path: 'home',
+  //   redirectTo: '',
+  //   pathMatch: 'full',
+  // },
   {
     path: '',
     loadChildren: () => import('./home/home.module').then((m) => m.HomeModule),
@@ -36,6 +36,7 @@ export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+
   },
   // {
   //   path: 'user',

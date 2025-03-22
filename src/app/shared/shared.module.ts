@@ -23,7 +23,7 @@ import { ReftourlPipe } from './pipes/reftourl.pipe';
     HeaderComponent,
     CartDetailsComponent,
     FiletourlPipe,
-    ReftourlPipe
+    ReftourlPipe,
 
 
   ],
@@ -42,7 +42,7 @@ import { ReftourlPipe } from './pipes/reftourl.pipe';
     HeaderComponent,
     CartDetailsComponent,
     FiletourlPipe,
-    ReftourlPipe
+    ReftourlPipe,
 
 
   ],

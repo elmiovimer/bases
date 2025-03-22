@@ -14,10 +14,11 @@ export class UsersComponent  implements OnInit {
   private firestoreServices : FirestoreService = inject(FirestoreService);
   private authenticationService : AuthenticationService = inject(AuthenticationService);
   private fb = inject(FormBuilder)
-
+  rolSegment: Models.Auth.Rol = 'admin';
   users: Models.Auth.UserProfile[];
   roles: Models.Auth.Rol[] = ['admin', 'client', 'driver'];
   rolSelected: Models.Auth.Rol = 'admin';
+
   formEmail = this.fb.group({
     email: ['', [Validators.email, Validators.required]],
 
@@ -26,6 +27,7 @@ export class UsersComponent  implements OnInit {
   cargando : boolean = false;
   enableMore : boolean = false;
   enableBuscarPorEmail : boolean = false;
+  numItems: number = 4;
 
 
   constructor() {
@@ -40,6 +42,18 @@ export class UsersComponent  implements OnInit {
 
   ngOnInit() {
 
+  }
+
+
+
+  onSearchChange(ev : any){
+    console.log(ev)
+  }
+
+  async loadData(ev:any){
+    console.log('loadData');
+    await this.getMoreUsers();
+    ev.target.complete();
   }
 
   async buscarPorEmail(){
@@ -65,6 +79,7 @@ export class UsersComponent  implements OnInit {
   }
 
   async getMoreUsers(rol : Models.Auth.Rol = this.rolSelected){
+    console.log('getMoreUsers -> ', this.rolSegment)
     if(this.rolSelected != rol){
       this.users = null;
       this.cargando = true;
@@ -73,7 +88,7 @@ export class UsersComponent  implements OnInit {
     this.rolSelected = rol;
     console.log('getMoreUsers');
     const path = Models.Auth.PathUsers;
-    const numItems = 2;
+    const numItems = this.numItems;
     let q: Models.Firebase.whereQuery[];
     q = [[`roles.${rol}`, '==', true]];
     const extras: Models.Firebase.extrasQuery = {
@@ -108,6 +123,13 @@ export class UsersComponent  implements OnInit {
     } else{
       this.enableMore = false;
     }
+  }
+
+  cancelSearch() {
+    setTimeout(() => {
+      this.enableBuscarPorEmail = false;
+      this.getMoreUsers();
+    }, 200);
   }
 
 }

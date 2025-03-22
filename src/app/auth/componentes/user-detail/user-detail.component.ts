@@ -1,4 +1,4 @@
-// import { Request } from 
+// import { Request } from
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Models } from 'src/app/models/models';
@@ -6,6 +6,9 @@ import { updateDoc } from '@angular/fire/firestore';
 import { WebService } from 'src/app/services/web.service';
 import { setClaim, helloWorld } from '../../../../../functions/src/index';
 import { FunctionsService } from 'src/app/firebase/functions.service';
+import { InteractionsService } from '../../../services/interactions.service';
+import { UserService } from '../../../services/user.service';
+import { response } from 'express';
 
 @Component({
   selector: 'app-user-detail',
@@ -23,11 +26,15 @@ export class UserDetailComponent  implements OnInit {
     enable: boolean
   }[] = [];
   roles : Models.Auth.Rol[] = ['admin','client','driver']
+  rolesSelected : Models.Auth.Rol[] = [];
 
 
   private firestoreService = inject(FirestoreService);
   private webService: WebService = inject(WebService);
-  private functionsService : FunctionsService = inject(FunctionsService)
+  private functionsService : FunctionsService = inject(FunctionsService);
+  private interactionsService : InteractionsService = inject(InteractionsService);
+  private userService : UserService = inject(UserService);
+
 
   constructor() {
   }
@@ -62,11 +69,58 @@ export class UserDetailComponent  implements OnInit {
     }
   }
 
-  initRoles(){
-    this.roles.forEach( rol =>{
-      this.rolesUser.push({rol, enable: this.user.roles[rol]})
-
+  async changeRol(ev : any){
+    console.log('chengeRol ->', this.rolesSelected);
+    await this.interactionsService.showLoading('Actualizando...');
+    const roles : any = {};
+    this.rolesSelected.forEach( rol =>{
+      roles[rol] = true;
     })
+    const updateDoc = {
+      roles
+    }
+    console.log('updateDoc roles -> ', updateDoc);
+    const request : Models.Functions.RequestSetRol = {
+      roles,
+      uid: this.user.id
+    }
+    try {
+      // const response = await this.functionsService.call<any, any>('appCall', request)
+      const response = await this.userService.setClaim(request);
+      await this.firestoreService.updateDocument(`${Models.Auth.PathUsers}/${this.user.id}`, updateDoc);
+      this.interactionsService.dismissLoading();
+      this.interactionsService.showToast('Rol actualizado con éxito');
+      console.log('response -> ', response);
+
+    } catch (error) {
+      this.interactionsService.dismissLoading();
+      this.interactionsService.showAlert('Error', "No se pudo actualizar el rol del usuario");
+      console.log('changeRol error ->', error)
+
+    }
+
+  }
+
+  initRoles(){
+
+
+    // para obtener el nombre de las variables en un objeto
+    //el for in se usa para hacer un for dentro de una variable tipo objeto
+    for(const key in this.user.roles){
+      const rol : any = key;
+      this.rolesSelected.push(rol)
+    }
+
+    Object.keys(this.user.roles).forEach(key =>{
+      // this.rolesSelected.push(key)
+      console.log('key ->', key)
+    })
+
+    // this.user.roles.forEach( rol =>{
+    //   // this.rolesUser.push({rol, enable: this.user.roles[rol]})
+    //   this.rolesSelected.push(rol)
+
+    // })
   }
 
   selectRol(item : {rol: Models.Auth.Rol, enable: boolean}){
@@ -87,27 +141,27 @@ export class UserDetailComponent  implements OnInit {
     }
   }
 
-  async setClaim(){
-    // const response = await this.functionsService.call<any, any>('appCall');
-    // console.log(response);
+  // async setClaim(){
+  //   // const response = await this.functionsService.call<any, any>('appCall');
+  //   // console.log(response);
 
-    const roles : any = {};
-    this.rolesUser.forEach( item =>{
-      if (item.enable) {
-        roles[item.rol] = true
+  //   const roles : any = {};
+  //   this.rolesUser.forEach( item =>{
+  //     if (item.enable) {
+  //       roles[item.rol] = true
 
-      }
-    });
-    const updateDoc = {roles}
-    console.log('updateDoc ->', updateDoc);
-    const request : Models.Functions.RequestSetRol = {
-      roles,
-      uid: this.user.id
-    }
-    const response = await this.functionsService.call<any, any>('setClaim', request);
-    console.log('response', response)
+  //     }
+  //   });
+  //   const updateDoc = {roles}
+  //   console.log('updateDoc ->', updateDoc);
+  //   const request : Models.Functions.RequestSetRol = {
+  //     roles,
+  //     uid: this.user.id
+  //   }
+  //   const response = await this.functionsService.call<any, any>('setClaim', request);
+  //   console.log('response', response)
 
-  }
+  // }
 
   async helloWorld(){
     const url = 'http://127.0.0.1:5001/basesfire-devserv/us-central1';

@@ -1,7 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-title>Home</ion-title>
+      <ion-buttons slot="start">
+          <ion-menu-button menu="main"></ion-menu-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content >
   <div id="home.component">
 
-    <app-header title="Home" ></app-header>
+    <!-- <app-header title="Home" ></app-header> -->
     <app-cart-details></app-cart-details>
 
     @if (!loading) {

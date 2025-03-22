@@ -1,3 +1,34 @@
 <ion-app >
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane when="lg" contentId="main">
+    <ion-menu contentId="main" menuId="main">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Menu</ion-title>
+          <ion-buttons slot="end">
+            <ion-menu-button menu="main">
+              <ion-icon  name="close-outline"></ion-icon>
+            </ion-menu-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <app-sidemenu></app-sidemenu>
+        </ion-content>
+    </ion-menu>
+
+    <div class="ion-page" id="main">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Main View</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding"> Main View Content </ion-content>
+    </div>
+
+
+
+    <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-split-pane>
+
+
 </ion-app>

@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { deleteObject, getBlob, getDownloadURL, getMetadata, list, listAll, ref, Storage, uploadBytes, uploadBytesResumable, uploadString } from '@angular/fire/storage';
 import { Subject } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
+import { updateProfile } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,8 @@ export class StorageService {
     return snapshot;
 
    }
+
+ 
 
 
 

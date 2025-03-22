@@ -7,7 +7,9 @@ import { updateDoc } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
-// import { environment } from '../environments/environment';
+import { LocalStorageService } from '../services/local-storage.service';
+// import { getAuth } from 'firebase-admin/auth';
+// import {getAuth} from "firebase-admin/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -17,46 +19,58 @@ export class AuthenticationService {
   auth : Auth = inject(Auth);
   authState = authState(this.auth);
   firestoreService = inject(FirestoreService);
+  private localStorageService : LocalStorageService = inject(LocalStorageService)
   router = inject(Router)
   userID : string
-  providers : Models.Auth.ProviderLoginI[] = [{
-          name: `Iniciar sesion con Correo y contrasena`,
-          id: 'password',
-          color: '#BD9B60',
-          textColor: 'white',
-          icon: 'mail',
-          enable : true
-    }];
+  providers : Models.Auth.ProviderLoginI[] = [];
+
 
   constructor() {
     console.log('AuthenticationService inicializado')
     this.auth.languageCode = 'es';
     this.getProviderLoginButtons();
 
+
    }
+
+
 
   async getProviderLoginButtons(){
     console.log('getProviderLoginButtons');
     const path = 'ProviderLogin'
-    if (!this.providers) {
-      console.log('first')
-      return;
+    const localButtons = await this.localStorageService.getObject('providers');
+    console.log('localButtons ->', localButtons)
+
+
+
+    if (localButtons) {
+      this.providers = localButtons
+
+    }else{
+
+      const response = await this.firestoreService.getDocuments<Models.Auth.ProviderLoginI>(`${path}`);
+      if(response){
+
+        response.forEach(element => {
+          console.log('response ->',element.data());
+          if (element.data().enable) {
+
+            this.providers.push(element.data())
+            // this.localStorageService.setObject(element.data().id, element.data());
+
+
+
+          }
+
+
+        });
+        this.localStorageService.setObject('providers', this.providers);
+    }
+      // sessionStorage.setItem('providers',this.providers )
 
     }
-    const response = await this.firestoreService.getDocuments<Models.Auth.ProviderLoginI>(`${path}`);
-    if(response){
-      response.forEach(element => {
-        console.log('response ->',element.data());
-        if (element.data().enable) {
 
-          this.providers.push(element.data())
-
-        }
-
-
-      });
-
-    }
+    // return this.providers
 
 
   }
@@ -111,9 +125,12 @@ export class AuthenticationService {
     return updatePassword(this.auth.currentUser, newPassword);
   }
 
-  async logout(){
+  async logout(reload = true){
     await signOut(this.auth);
-    window.location.reload()
+    if (reload) {
+      window.location.reload()
+
+    }
 
   }
 
@@ -160,6 +177,17 @@ export class AuthenticationService {
 
     return getRedirectResult(this.auth);
   }
+
+  async setClaim(uid : string, name : string, claim : any){
+    console.log('setClain');
+    const data = {
+      [name] : claim
+    }
+    // await getAuth().setCustomUserClaims(uid, data);
+    console.log(`Claims asignados a UID: ${uid}`, data);
+
+  }
+
 
 
 
@@ -273,12 +301,12 @@ async loginWithProviderByPopup(providerId : string){
           }
         })
 
-        // const link = `http://localhost:4200/user/request-login?provider=${providerId}&intentId=${id}`;
+        // const link = `http://localhost:4200/auth/request-login?provider=${providerId}&intentId=${id}`;
 
-        const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
+        const link = `https://${environment.firebaseConfig.authDomain}/auth/request-login?provider=${providerId}&intentId=${id}`;
         // console.log('link ->', link)
         await Browser.open({ url: link });
-        // this.router.navigate(['/user/request-login'], {queryParams: {intentId: queryParams.intentId}});
+        // this.router.navigate(['/auth/request-login'], {queryParams: {intentId: queryParams.intentId}});
         // this.router.navigate([link]);
 
 

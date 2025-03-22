@@ -13,7 +13,7 @@
 </ion-header>
 
 <!-- contenido -->
-<ion-content fullscreen="true" class="light-mode-content" >
+<ion-content fullscreen="true"  color="light" >
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Perfil</ion-title>
@@ -22,7 +22,7 @@
 @if (!loading) {
   @if (user && userProfile) {
     <!-- Bienvenido -->
-    <ion-list>
+    <ion-list >
 
       <ion-list-header mode="ios">
         <ion-label>Bienvenido</ion-label>
@@ -89,7 +89,7 @@
           ></ion-input>
           <ion-buttons slot="end">
             <ion-button (click)="actualizarEdad()">
-              <ion-icon slot="icon-only" name="save"></ion-icon>
+              <ion-icon slot="icon-only" name="save" color="primary"></ion-icon>
 
             </ion-button>
           </ion-buttons>
@@ -99,17 +99,17 @@
 
 
     <!-- opciones -->
-    <ion-accordion-group>
+    <ion-accordion-group [multiple]="true" [value]="['first']">
       <ion-accordion value="first">
         <ion-item slot="header" >
           <ion-icon slot="start" name="settings"></ion-icon>
           <ion-label>Opciones</ion-label>
         </ion-item>
-        <div class="ion-padding" slot="content">
-          <ion-grid fixed class="ion-no-padding">
+        <div  slot="content">
+          <ion-grid fixed >
             <ion-row>
-              <ion-col size="12" size-md="8">
-                <ion-list inset>
+              <ion-col >
+                <ion-list >
                   <ion-item button (click)="selectOpcModal('email')">
                     <ion-icon slot="start" name="mail"></ion-icon>
                     <ion-label>Editar Correo</ion-label>
@@ -155,11 +155,11 @@
           <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
           <ion-label>Opciones avanzadas</ion-label>
         </ion-item>
-        <div class="ion-padding" slot="content">
-          <ion-grid fixed class="ion-no-padding">
+        <div slot="content">
+          <ion-grid fixed >
             <ion-row>
-              <ion-col size="12" size-md="8">
-                <ion-list inset>
+              <ion-col >
+                <ion-list >
                   <ion-item button [routerLink]="['/auth/admin']">
                     <ion-icon slot="start" name="people"></ion-icon>
                     <ion-label>Administrar usuarios</ion-label>
@@ -201,14 +201,160 @@
 
 
       <ion-content class="ion-padding">
+        <!-- editar correo -->
         @if (opcModal == 'email') {
           <ion-item lines="none" color="secondary">
-            <ion-icon slot="start" name="information-circle"></ion-icon>
+            <ion-icon slot="start" name="information-circle" color="primary"></ion-icon>
             <ion-label>Ingresa el nuevo coreo, te enviaremos un enlace de verificacion para que el cambio sea exitoso. </ion-label>
           </ion-item>
 
-          <!-- todo continuar aqui con el form -->
+
+           <form [formGroup]="formNewEmail" (ngSubmit)="actualizarEmail()">
+            <br>
+            <ion-input type="email" placeholder="email"
+              label="Nuevo Correo"
+              labelPlacement="floating"
+              fill="outline"
+              mode="md"
+              errorText="Ingresa un correo válido"
+            ></ion-input>
+            <br>
+
+            <div class="ion-text-center">
+              <ion-button  type="submit" shape="round">
+                Actualizar
+              </ion-button>
+            </div>
+
+           </form>
         }
+
+        <!-- cambiar nombre -->
+         @if (opcModal == 'name') {
+          <ion-item lines="none" color="secondary">
+            <ion-label>Ingresa tu nombre de perfil</ion-label>
+            <ion-icon slot="start" name="information-circle" color="primary"></ion-icon>
+          </ion-item>
+          <br>
+
+          <ion-input type="text" placeholder="Nombre"
+            fill="outline"
+            label="Nombre"
+            labelPlacement="floating"
+            [(ngModel)] = "newName"
+            mode="md"
+          ></ion-input>
+          <br>
+
+          <div class="ion-text-center">
+            <ion-button (click)="actualizarPerfil()"
+              shape="round">
+              Actualizar
+            </ion-button>
+
+          </div>
+
+         }
+
+         <!-- cambiar foto -->
+          @if (opcModal == 'photo') {
+            <ion-item lines="none">
+              <input
+                #files
+                type="file"
+                style="display: none;"
+                accept="image/*"
+                (change)="viewPreview(files)"
+               >
+
+
+            </ion-item>
+
+             <ion-item >
+              <ion-avatar slot="start">
+                @if (!newPhoto) {
+                  <img [src]="user.photoURL | reftourl | async" />
+                } @else {
+                  <img [src]="newPhoto | filetourl" />
+                }
+              </ion-avatar>
+
+              <ion-buttons slot="end">
+                <ion-button type="button" (click)="files.click()">
+                  <ion-icon slot="start" name="image"></ion-icon>
+                  editar
+                </ion-button>
+                <ion-button type="button" (click)="downloadProfilePicture()" >
+                  <ion-icon slot="icon-only" name="cloud-Download"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+             </ion-item>
+             <br>
+
+             @if (newPhoto) {
+              <div class="ion-text-center">
+                <ion-button (click)="editarProfilePicture()" shape="round">
+                 Actualizar
+                </ion-button>
+              </div>
+             }
+          }
+
+          <!-- cambiar password -->
+           @if ( opcModal == 'password' ) {
+            <!-- informacion -->
+            <ion-item lines="none" color="secondary">
+              <ion-icon slot="start" name="information-circle" color="primary"></ion-icon>
+
+              <ion-label>Ingresa una nueva contraseña. <br> Para completar esta accion debes haber iniciado sesion recientemente</ion-label>
+            </ion-item>
+            <br>
+
+            <form [formGroup]="formCambiarPassword" (ngSubmit)="cambiarPassword()">
+              <!-- new password -->
+              <ion-input type="password" placeholder="Contraseña"
+                label="Contraseña"
+                mode="md"
+                fill="outline"
+                labelPlacement="floating"
+                errorText="Debe ser minimo de 6 caracteres"
+                formControlName="newPassword"
+              >
+              <ion-input-password-toggle color="primary" slot="end" *ngIf="formCambiarPassword.controls['newPassword']?.value"></ion-input-password-toggle>
+            </ion-input>
+              <br>
+
+              <!-- repeat password -->
+              <ion-input type="password" placeholder="Contraseña"
+              label="Repita la contraseña"
+              mode="md"
+              fill="outline"
+              labelPlacement="floating"
+              errorText="Debe ser minimo de 6 caracteres"
+              formControlName="repeatPassword"
+            >
+              <ion-input-password-toggle color="primary" slot="end" *ngIf="formCambiarPassword.controls['repeatPassword']?.value"></ion-input-password-toggle>
+            </ion-input>
+
+            <span
+              *ngIf="formCambiarPassword.controls['repeatPassword'].hasError('notSame')"
+            >
+              <i>Las contraseñas no <strong>coinciden</strong></i>
+            </span>
+
+            <br>
+
+            <div class="ion-text-center">
+              <ion-button type="submit" shape="round">
+                Establecer
+              </ion-button>
+
+            </div>
+
+            </form>
+
+
+           }
 
       </ion-content>
 

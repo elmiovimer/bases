@@ -68,3 +68,6 @@ npx cap open android
 
 ionic g s firebase/storage
 
+
+//para guardar en cache
+npm install @capacitor/preferences

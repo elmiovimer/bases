@@ -17,7 +17,7 @@
   </ion-header>
 
   <!-- logo -->
-   <ion-grid fixed >
+  <ion-grid fixed >
     <ion-row class="ion-justify-content-center">
       <ion-col size="10" size-md="6" size-lg="4">
         @if (isDarkMode) {
@@ -32,7 +32,9 @@
    </ion-grid>
 
 
-  <!-- botones providers -->
+
+  @if(providers){
+      <!-- botones providers -->
   @if (!enableLoginWithEmailAndPassword) {
     <ion-grid fixed class="content-center">
       @for (provider of providers; track $index) {
@@ -195,6 +197,19 @@
 
       </ion-modal>
    }
+
+  }@else{
+    <br>
+  <div class="ion-text-center">
+    <ion-item lines="none" color="secondary">
+      <ion-icon slot="start" name="information-circle" ></ion-icon>
+      <ion-label>Es posible que no tengas conexion a internet. por favor, reinicia la app</ion-label>
+    </ion-item>
+
+  </div>
+  }
+
+
 
 
 </ion-content>

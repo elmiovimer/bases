@@ -4,9 +4,10 @@ import { HomeComponent } from './pages/home/home.component';
 import { ArticlePageComponent } from './pages/article-page/article-page.component';
 import { guards } from '../shared/guards/guards';
 
+
 const routes: Routes = [
   {
-    path:'', component: HomeComponent, 
+    path:'', component: HomeComponent,
   },
 
 

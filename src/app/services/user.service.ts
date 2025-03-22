@@ -6,6 +6,9 @@ import { Models } from '../models/models';
 import { Router } from '@angular/router';
 import { WebService } from './web.service';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { updateDoc } from '@angular/fire/firestore';
+import { response } from 'express';
+import { FunctionsService } from '../firebase/functions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +18,7 @@ export class UserService {
 
   private authenticationService = inject(AuthenticationService);
   private firestoreService = inject(FirestoreService);
+  private functionsService : FunctionsService = inject(FunctionsService);
   private router = inject(Router);
   private webService = inject(WebService);
   private user: User;
@@ -30,6 +34,7 @@ export class UserService {
 
   constructor() {
     console.log('UserService inicializado');
+
 
 
 
@@ -66,6 +71,7 @@ export class UserService {
   getUser(): User | null {
     return this.userSubject.value;
   }
+
   isLogin() {
     return new Promise<boolean>( async (resolve) => {
       console.log('isLogin');
@@ -143,6 +149,8 @@ export class UserService {
 // }
 
 async getRol() {
+  // console.log('roles ->', this.roles)
+
   if (this.roles) {
     return this.roles
   }
@@ -150,43 +158,88 @@ async getRol() {
     const tokenResult = await this.user.getIdTokenResult(true);
     // console.log('tokenResult -> ', tokenResult);
     const claims: any = tokenResult.claims;
+    console.log('claims ->', claims)
+    if(claims.roles !== this.userProfile.roles){
+      this.roles = this.userProfile.roles;
+
+
+      const roles : {[key : string] : boolean} = {};
+      Object.keys(this.userProfile.roles).forEach(key =>{
+        roles[key] = true;
+      })
+
+      const request : Models.Functions.RequestSetRol = {
+        roles,
+        uid: this.user.uid
+      }
+      try {
+        const response = await this.setClaim(request)
+
+      } catch (error) {
+
+      }
+
+
+    }
     if (claims.roles) {
       this.roles = claims.roles;
-      return claims.roles
+      // return claims.roles
     }
+    return this.roles
+
+
   }
   return null;
 }
+
+
+//llamado a function en firebase functions
+async setClaim(data  :any){
+
+
+    const request : Models.Functions.RequestSetRol = data
+    try {
+      const response = await this.functionsService.call<any, any>('setClaim', request);
+      console.log('response', response)
+      return response;
+
+    } catch (error) {
+      console.log('error en setClaim', error)
+
+    }
+    return null
+
+  }
 
   /** Obtiene el perfil del usuario desde Firestore */
   async getUserProfile(uid: string) {
     console.log('getUserProfile', this.userProfile)
     if (this.userProfile) {
       return this.userProfile;
-    } else{
+    }
+    const response = await this.firestoreService.getDocument<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`);
 
-      const response = await this.firestoreService.getDocument<Models.Auth.UserProfile>(`${Models.Auth.PathUsers}/${uid}`);
+    if (response.exists()) {
+      console.log('response.data() ->',response.data())
+      this.userProfile = response.data();
 
-      if (response.exists()) {
-        console.log('response.data() ->',response.data())
-        this.userProfile = response.data();
-
-        // Sincronizar email si es diferente
-        if (this.userProfile.email !== this.getUser()?.email) {
-          console.log('Sincronizando email...');
-          const updateDoc = { email: this.getUser()?.email }
-          await this.firestoreService.updateDocument(`${Models.Auth.PathUsers}/${uid}`, updateDoc );
-        }
-      } else {
-        // Redirigir al usuario a completar su registro si no tiene perfil
-        this.router.navigate(['/user/completar-registro']);
-
+      // Sincronizar email si es diferente
+      if (this.userProfile.email !== this.getUser()?.email) {
+        console.log('Sincronizando email...');
+        const updateDoc = { email: this.getUser()?.email }
+        await this.firestoreService.updateDocument(`${Models.Auth.PathUsers}/${uid}`, updateDoc );
+        console.log('userProfile ->', this.userProfile)
       }
-      console.log('userProfile ->', this.userProfile)
-      return this.userProfile;
+    } else {
+      // Redirigir al usuario a completar su registro si no tiene perfil
+      this.router.navigate(['/auth/completar-registro']);
 
     }
-    }
+    return this.userProfile;
+    // return null;
+
+  }
+
 
 
 

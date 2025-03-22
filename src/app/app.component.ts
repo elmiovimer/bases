@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet, IonIcon, IonButton, IonLabel, IonContent, IonSplitPane, IonHeader, IonToolbar, IonMenu, IonTitle, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
 import { FirestoreService } from './firebase/firestore.service';
 import { Models } from './models/models';
 import { increment } from 'firebase/firestore';
@@ -11,13 +11,15 @@ import { helloWorld } from '../../functions/src/index';
 import { WebService } from './services/web.service';
 import { StorageService } from './firebase/storage.service';
 import { IoniciconsService } from './services/ionicicons.service';
+import { SidemenuComponent } from './shared/components/sidemenu/sidemenu.component';
+
 
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
   standalone: true,
+  imports: [SidemenuComponent, IonApp, IonRouterOutlet, IonIcon, IonButton, IonLabel, IonContent, IonSplitPane, IonHeader, IonToolbar, IonMenu, IonTitle, IonButtons, IonMenuButton],
 })
 export class AppComponent {
   private firestoreService = inject(FirestoreService);

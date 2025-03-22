@@ -58,7 +58,7 @@ export class RegisterComponent  implements OnInit {
     if (this.results) {
       if (!this.results.nextPageToken) {
         return;
-        
+
       }
       pageToken = this.results.nextPageToken;
 
@@ -67,14 +67,14 @@ export class RegisterComponent  implements OnInit {
     // if (this.results) {
     //   res.items.unshift(...this.results.items);
     //   res.prefixes.unshift(...this.results.prefixes)
-      
+
     // }
     this.results = res;
     console.log('this.results ->', this.results)
   }
 
   descargar(item : string = ''){
-    
+
   }
   async registrarse(){
     this.loading = true;
@@ -115,15 +115,15 @@ export class RegisterComponent  implements OnInit {
 
   async subirFoto(uid : string){
    if (this.file) {
-    
+
     const snap = await this.storageService.uploadFile(`PhotosPerfil/${uid}`, this.file.name, this.file);
     console.log('snap -> ', snap);
     // const url = await this.storageService.getDownloadUrl(snap.ref.fullPath)
-    
+
     return snap.ref.fullPath;
 
-    
-   } 
+
+   }
    return '';
 
   }
@@ -177,7 +177,7 @@ export class RegisterComponent  implements OnInit {
       // this.datosForm.controls['photo'].value = files.item(0)
       // this.form.controls['dept'].value = selected.id;
 
-      this.image = URL.createObjectURL(files.item(0));
+      // this.image = URL.createObjectURL(files.item(0));
       // this.image = await this.storageService.fileToBase64(files.item(0));
 
       console.log('this.image ->' , this.image)

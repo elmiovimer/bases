@@ -25,8 +25,9 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
   private fb = inject(FormBuilder);
   private authenticationService = inject(AuthenticationService);
-  private interactionServices = inject(InteractionsService)
-  private firestoreService = inject(FirestoreService)
+  private interactionServices = inject(InteractionsService);
+  private firestoreService = inject(FirestoreService);
+  private userService = inject(UserService);
   private router = inject(Router);
   loading : boolean = false;
   // inicio : string = ' ';
@@ -60,8 +61,16 @@ export class LoginComponent  implements OnInit, OnDestroy {
 
   constructor() {
 
-    this.loading = true;
-    this.providers = this.authenticationService.providers;
+
+    try {
+      this.providers = this.authenticationService.providers;
+
+    } catch (error) {
+      this.interactionServices.showAlert(`Importante`,`Es posible que no tengas conexion a internet. reinicia la aplicacion`)
+
+
+    }
+
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       this.isDarkMode = event.matches;
       console.log('Modo oscuro cambiado:', this.isDarkMode);
@@ -203,10 +212,21 @@ export class LoginComponent  implements OnInit, OnDestroy {
       if (response) {
         const user = response.user;
         this.interactionServices.showToast(`Bienvenido ${user.displayName}`)
-        setTimeout(() => {
-          this.router.navigate(['auth', 'profile'], {replaceUrl: true});
+        const userProfile = await this.userService.getUserProfile(user.uid)
+        if(userProfile){
+          setTimeout(() => {
+            this.router.navigate(['auth', 'profile'], {replaceUrl: true});
 
-        }, 200);
+          }, 200);
+
+        }
+        else{
+          setTimeout(() => {
+            this.router.navigate(['auth', 'completar-registro'], {replaceUrl: true});
+
+          }, 200);
+
+        }
 
       }
 

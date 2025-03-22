@@ -43,7 +43,7 @@ export class RequestLoginComponent  implements OnInit {
       const provider = queryParams.provider;
       await this.interactionServices.showLoading('Procesando...')
       this.authenticationService.loginWithProvider(provider)
-      this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
+      this.router.navigate(['/auth/request-login'], { queryParams: { intentId: queryParams.intentId}})
     }
 
   }

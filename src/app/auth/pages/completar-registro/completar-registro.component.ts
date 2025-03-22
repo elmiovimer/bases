@@ -5,6 +5,8 @@ import { User } from '@angular/fire/auth';
 import { Models } from 'src/app/models/models';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StorageService } from '../../../firebase/storage.service';
+import { InteractionsService } from '../../../services/interactions.service';
 
 @Component({
   selector: 'app-completar-registro',
@@ -15,6 +17,8 @@ import { Router } from '@angular/router';
 export class CompletarRegistroComponent  implements OnInit {
   private authenticationService : AuthenticationService = inject(AuthenticationService);
   private firestoreService : FirestoreService = inject(FirestoreService);
+  private storageService : StorageService = inject(StorageService);
+  private interactionsService : InteractionsService = inject(InteractionsService);
   private fb : FormBuilder = inject(FormBuilder)
   private router = inject(Router)
   loading : boolean = false;
@@ -22,6 +26,7 @@ export class CompletarRegistroComponent  implements OnInit {
 
   user: User
   userProfile: Models.Auth.UserProfile;
+  file : File
 
   datosFormCompleteRegistro = this.fb.group({
     email: ['',[Validators.required, Validators.email]],
@@ -31,27 +36,51 @@ export class CompletarRegistroComponent  implements OnInit {
   })
 
   constructor() {
-    this.authenticationService.authState.subscribe(res => {
-      if(res){
-        this.user = res;
-        this.datosFormCompleteRegistro.setValue({
-          email : res.email,
-          name : res.displayName,
-          photo : res.photoURL,
-          age : null
-        })
-      }
-      this.loading = false;
+
+    this.user = this.authenticationService.getCurrentUser();
+    const photo : any = this.user.photoURL;
+    this.datosFormCompleteRegistro.setValue({
+      email: this.user.email,
+      name: this.user.displayName,
+      photo: photo,
+      age: null
+
     })
+    console.log('photo ->', photo)
    }
 
   ngOnInit() {}
 
+  async viewPreview(input : HTMLInputElement){
+    if (input.files.length) {
+      const files = input.files;
+      console.log('viewPreview files -> ', files);
+      this.file = files.item(0);
+
+    }
+
+  }
+
+  async subirFoto(uid : string, file : File){
+     const snap = await this.storageService.uploadFile(`PhotosPerfil/${uid}`, file.name, file);
+     console.log('snap -> ', snap);
+     // const url = await this.storageService.getDownloadUrl(snap.ref.fullPath)
+
+     return snap.ref.fullPath;
+
+
+
+   }
+
   async completarRegistro(){
-    this.loading = true;
+    this.loading = true
+    await this.interactionsService.showLoading('Procesando...');
     console.log('datosDormCompleteRegistro ->', this.datosFormCompleteRegistro);
     if(this.datosFormCompleteRegistro.valid){
       const data = this.datosFormCompleteRegistro.value;
+      if(this.file){
+      }
+
       console.log('valid ->', data);
       try {
         let profile: Models.Auth.UPdatePforileI = {
@@ -70,11 +99,17 @@ export class CompletarRegistroComponent  implements OnInit {
         }
         console.log('datosUser ->', datosUser);
         await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, user.uid);
-        this.router.navigate(['/user/profile'])
+        this.interactionsService.dismissLoading();
+        this.interactionsService.showToast('Completado registro con éxito')
+        setTimeout(() => {
+          this.router.navigate(['/auth/profile'], {replaceUrl: true})
+
+        }, 200);
 
 
       } catch (error) {
         console.log('error en completarRegistro() -> ', error)
+        this.interactionsService.showAlert('Error', 'Ocurrió un error, intenta nuevamente')
 
       }
     }

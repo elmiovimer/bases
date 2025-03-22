@@ -1,4 +1,39 @@
 
+    @if (user) {
+      <ion-item>
+        <ion-avatar>
+          @if (user.photo) {
+            <img [src]="user.photo | reftourl | async" />
+
+          }@else {
+            <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg">
+          }
+        </ion-avatar>
+        <ion-label class="ion-padding-start">
+          {{user.name}}
+          <p>{{user.email}}</p>
+          <p>{{user.age}} años</p>
+        </ion-label>
+      </ion-item>
+
+
+        <ion-item>
+          <!-- <ion-label>Pizza</ion-label> -->
+          <ion-select label="Roles"
+            multiple="true"
+            labelPlacement="floating"
+            [(ngModel)]="rolesSelected"
+            (ionChange)="changeRol($event)"
+          >
+          @for (rol of roles; track $index) {
+            <ion-select-option [value]="rol">{{rol}}</ion-select-option>
+
+          }
+          </ion-select>
+        </ion-item>
+
+    }
+
     <ion-item lines="none" class="contenedor">
       <!-- foto -->
       <div  >
@@ -45,9 +80,9 @@
           }
 
         <!-- </ion-buttons> -->
-        <button (click)="setClaim()">
-          <strong>setClaim</strong>
-        </button>
+        <!-- <button (click)="setClaim()"> -->
+          <!-- <strong>setClaim</strong> -->
+        <!-- </button> -->
         <button (click)="helloWorld()">
           <strong>helloWorld</strong>
         </button>

@@ -26,11 +26,12 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [guards.isLogin("auth")]
+    canActivate: [guards.isLogin()]
   },
   {
     path: 'completar-registro',
-    component: CompletarRegistroComponent
+    component: CompletarRegistroComponent,
+    canActivate: [guards.isLogin()]
   },
   {
     path: 'request-login',
@@ -38,7 +39,8 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    component: UsersComponent
+    component: UsersComponent,
+    canActivate: [guards.isRolClaim(['admin'])]
   },
 ];
 
