@@ -10,8 +10,10 @@ export class InteractionsService {
   private loadingController: LoadingController = inject(LoadingController);
   private toastController: ToastController = inject(ToastController)
   private alertController: AlertController = inject(AlertController)
-
-
+  mensajeError = 'Parece que ocurrió un problema. Por favor, inténtalo nuevamente. Si el inconveniente continúa, contacta a nuestro equipo de soporte para obtener ayuda.'
+  mensajeEmptyFields = 'Para continuar, completa todos los campos obligatorios.'
+  titleImportante = "⚠️ Importante";
+  titleError = "⚠️ Error";
   constructor() { }
 
   async showLoading(message : string = 'Loading...'){

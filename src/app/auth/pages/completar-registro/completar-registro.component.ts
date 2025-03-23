@@ -23,8 +23,9 @@ export class CompletarRegistroComponent  implements OnInit {
   private userService : UserService = inject(UserService)
   private fb : FormBuilder = inject(FormBuilder)
   private router = inject(Router)
-  init: boolean = true;
 
+
+  init: boolean = true;
   user: User
   userProfile: Models.Auth.UserProfile;
   file : File
@@ -39,9 +40,6 @@ export class CompletarRegistroComponent  implements OnInit {
   constructor() {
 
     this.user = this.authenticationService.getCurrentUser();
-    const usuario = this.userService.getUser();
-    console.log('usuario ->', usuario)
-    console.log('this.user ->', this.user)
     const photo : any = this.user.photoURL;
     this.datosFormCompleteRegistro.setValue({
       email: this.user.email,
@@ -54,10 +52,13 @@ export class CompletarRegistroComponent  implements OnInit {
 
   ngOnInit() {}
 
-  async viewPreview(input : HTMLInputElement){
-    if (input.files.length) {
-      const files = input.files;
-      console.log('viewPreview files -> ', files);
+  /**
+   * Muestra una vista previa de la imagen seleccionada por el usuario.
+   * @param files - Elemento de entrada de tipo archivo.
+   */
+  async viewPreview({ files } : HTMLInputElement){
+    //files es un elemento desestructurado. por eso esta entre
+    if (files.length) {
       this.file = files.item(0);
       const img: any = files.item(0)
         this.datosFormCompleteRegistro.controls.photo.setValue(img);
@@ -65,55 +66,62 @@ export class CompletarRegistroComponent  implements OnInit {
     }
 
   }
-
+/**
+   * Sube la foto de perfil del usuario al almacenamiento y devuelve la ruta del archivo.
+   * @param uid - Identificador del usuario.
+   * @param file - Archivo de la imagen a subir.
+   * @returns Ruta de almacenamiento de la imagen.
+   */
   async subirFoto(uid : string, file : File){
-     const snap = await this.storageService.uploadFile(`PhotosPerfil/${uid}`, file.name, file);
-    //  console.log('snap -> ', snap);
+      const path = Models.Firebase.PathPhotosPerfil;
+     const snap = await this.storageService.uploadFile(`${path}/${uid}`, file.name, file);
      return snap.ref.fullPath;
 
    }
-
+  /**
+   * Completa el registro del usuario guardando su información en Firestore.
+   */
   async completarRegistro(){
     console.log('datosDormCompleteRegistro ->', this.datosFormCompleteRegistro);
 
-    if(this.datosFormCompleteRegistro.valid){
-      await this.interactionsService.showLoading('Procesando...');
-      console.log(this.datosFormCompleteRegistro.valid)
-      const data = this.datosFormCompleteRegistro.value;
-      data.photo = await this.subirFoto(this.user.uid, this.file)
-
-      console.log('valid ->', data);
-      try {
-        let profile: Models.Auth.UpdateProfileI = {
-          displayName: data.name,
-          photoURL: data.photo
-        }
-        const user = this.authenticationService.getCurrentUser();
-        await this.authenticationService.updateProfile(profile);
-        const datosUser : Models.Auth.UserProfile = {
-          name: data.name,
-          photo: data.photo,
-          age : data.age,
-          email : data.email,
-          id : user.uid,
-          roles: { client: true }
-        }
-        console.log('datosUser ->', datosUser);
-        await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, user.uid);
-        this.interactionsService.dismissLoading();
-        this.interactionsService.showToast('Completado registro con éxito')
-        setTimeout(() => {
-          this.router.navigate(['/auth/profile'], {replaceUrl: true})
-
-        }, 200);
-
-
-      } catch (error) {
-        console.log('error en completarRegistro() -> ', error)
-        this.interactionsService.showAlert('Error', 'Ocurrió un error, intenta nuevamente')
-
-      }
+    if(!this.datosFormCompleteRegistro.valid){
+      this.interactionsService.showAlert(this.interactionsService.titleImportante, this.interactionsService.mensajeEmptyFields);
+      return;
     }
+    // console.log(this.datosFormCompleteRegistro.value);
+    await this.interactionsService.showLoading('Procesando...');
+    try {
+      const data = this.datosFormCompleteRegistro.value;
+      // data.photo = !data.photo.includes('http') && await this.subirFoto(this.user.uid, this.file)
+      data.photo = data.photo.includes('http')? data.photo : await this.subirFoto(this.user.uid, this.file)
+      // console.log(data)
+
+      let profile: Models.Auth.UpdateProfileI = {
+        displayName: data.name,
+        photoURL: data.photo
+      };
+      await this.authenticationService.updateProfile(profile);
+
+      const datosUser : Models.Auth.UserProfile = {
+        name: data.name,
+        photo: data.photo,
+        age : data.age,
+        email : data.email,
+        id : this.user.uid,
+        roles: { client: true }
+      };
+
+      await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, this.user.uid);
+      this.interactionsService.dismissLoading();
+      this.interactionsService.showToast('Registro completado con éxito')
+      setTimeout(() => {  this.router.navigate(['/auth/profile'], {replaceUrl: true})  }, 200);
+    } catch (error) {
+      this.interactionsService.dismissLoading();
+      console.log('error en completarRegistro() -> ', error)
+      this.interactionsService.showAlert('Error', this.interactionsService.mensajeError)
+
+    }
+
   }
 
 }

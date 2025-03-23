@@ -79,10 +79,14 @@
                 type="file"
                 style="display: none;"
                 accept="image/*"
+                formControlName="photo"
+                [ngClass]="{'is-invalid': datosForm.controls['photo'].invalid }"
+                [required]="true"
               >
 
+
               <!-- boton para cargar la foto en la app -->
-              <ion-list inset  mode="ios">
+              <ion-list #foto inset  mode="ios">
                 <ion-item button lines="none" detail="false" (click)="inputFile.click()">
                   <ion-label>Seleciona una foto de perfil</ion-label>
 
@@ -91,13 +95,20 @@
                 </ion-item>
               </ion-list>
 
+              <div *ngIf="datosForm.controls['photo'].invalid " class="error-message">
+                ⚠️ Debes seleccionar una foto antes de continuar.
+              </div>
+              <br>
+
               <!-- vista previa de la foto -->
               @if(file){
                 <ion-img
                   [src]="file | filetourl "
                 ></ion-img>
+                <br>
 
                }
+               <br>
 
                <div class="ion-text-center">
                 <ion-button type="submit"  shape="round">
@@ -121,157 +132,3 @@
  </ion-content>
 
 
-<ion-content>
-  <div style="text-align: center;">
-    <p>SIGN UP</p>
-  </div>
-
-
-  <div class="content-form">
-    <form [formGroup]="datosForm" (ngSubmit)="registrarse()" >
-      <!-- email -->
-       <div class="input-content" >
-        <label for="">Email:</label>
-        <input placeholder="Email" formControlName="email" >
-        @if(datosForm.controls['email'].hasError('required')){
-          <span>
-            <i>
-              This field is <strong>required</strong>
-            </i>
-          </span>
-        }
-        @if(datosForm.controls['email'].hasError('email')){
-          <span style="text-align: end">
-            <i>
-              please type a <strong>valid</strong> email
-            </i>
-          </span>
-        }
-       </div>
-
-       <!-- password -->
-       <div class="input-content">
-        <label for="">Password:</label>
-        <input placeholder="Password" type="password" minlength="6" formControlName="password">
-        @if(datosForm.controls['password'].hasError('required')){
-          <span>
-            <i>
-              This field is <strong>required</strong>
-            </i>
-          </span>
-        }
-      </div>
-
-       <!-- nombre -->
-       <div class="input-content">
-        <label for="">Name:</label>
-        <input placeholder="Name"  formControlName="name">
-        @if(datosForm.controls['name'].hasError('required')){
-          <span>
-            <i>
-              This field is <strong>required</strong>
-            </i>
-          </span>
-        }
-      </div>
-
-       <!-- edad -->
-       <div class="input-content">
-        <label for="">Age:</label>
-        <input placeholder="Age"  formControlName="age">
-        @if(datosForm.controls['age'].hasError('required')){
-          <span>
-            <i>
-              This field is <strong>required</strong>
-            </i>
-          </span>
-        }
-      </div>
-
-      <!-- foto -->
-
-      <div class="input-content">
-        <label for="">Photo:</label>
-        <button type="button" (click)="inputImage.click()">subir foto</button>
-        <input #inputImage (change)="viewPreview(inputImage)" type="file" style="display: none;">
-        @if(image){
-          <ion-img
-            [src]="image "
-          ></ion-img>
-
-
-         }
-      </div>
-
-
-
-      <!-- enviar -->
-      <div style="text-align: center;">
-        <button type="submit" [disabled]="loading">
-          <strong>Register</strong>
-        </button>
-      </div>
-      <div class="input-content">
-       <label for="">Photo:</label>
-       <input placeholder="Photo"  formControlName="photo">
-
-
-       <!-- subir directamente -->
-       <h1>Storage</h1>
-       <label for="fileUpload">Choose a File</label>
-       <input id="fileUpload" type="file" #upload accept="image/*">
-       <button (click)="uploadFile(upload)">Upload {{progress}}%</button>
-      <strong>---------------------</strong>
-
-       <!-- previsualizar antes de subir -->
-       <input #inputFile2
-       (change)="viewPreview(inputFile2)"
-       type="file" style="display: none;">
-       <div>
-         <button type="button" (click)="inputFile2.click()" >cargar archivo</button>
-         <button type="button" (click)="save()">guardar</button>
-
-         <button (click)="download(fileFirestore)" >descargar</button>
-         <button (click)="getMoreFiles()">get more files</button>
-
-       </div>
-       <!-- mostrando archivos y carpetas -->
-        <div>
-          @for (folder of this.results?.prefixes; track $index) {
-            <div>
-              <button class="folder">{{folder.name}}</button>
-            </div>
-          }
-
-          @for (item of this.results?.items; track $index) {
-            <div>
-              <button class ='item'>{{item.name}}</button>
-            </div>
-          }
-        </div>
-       @if(file){
-        <ion-img
-          [src]="file "
-          alt="The Wisconsin State Capitol building in Madison, WI at night"
-        ></ion-img>
-
-
-       }
-
-       @if (video) {
-        <video width="320" height="240" controls>
-          <source [src]="video" type="video/mp4">
-          <!-- <source src="movie.ogg" type="video/ogg"> -->
-          Your browser does not support the video tag.
-        </video>
-       }
-
-
-     </div>
-    </form>
-  </div>
-  <div style="text-align: center;">
-    <p>have a user?</p>
-    <button class="button-gris" [routerLink]="['/auth/login']">Sign in</button>
-  </div>
-</ion-content>

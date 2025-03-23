@@ -6,8 +6,8 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/firebase/storage.service';
 import { Browser } from '@capacitor/browser';
-import { folder } from 'ionicons/icons';
 import { ListResult } from '@angular/fire/storage';
+import { InteractionsService } from '../../../services/interactions.service';
 
 @Component({
   selector: 'app-register',
@@ -23,112 +23,101 @@ export class RegisterComponent  implements OnInit {
   private storageService = inject(StorageService);
   private router = inject(Router);
   private changeDetectorRef : ChangeDetectorRef = inject(ChangeDetectorRef);
+  private interactionsService : InteractionsService = inject(InteractionsService);
+
   pic : string = null;
   progress = '0';
-
   file: File;
   image: string;
   video: string;
   fileFirestore : string = 'gs://basesfire-devserv.firebasestorage.app/PhotosPerfil/Screenshot 2025-03-13 at 10.36.39 AM.png'
+  loading : boolean = false;
+  results : ListResult;
+
 
   datosForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
     name: ['', Validators.required],
-    photo: [''],
-    age: [null]
+    photo: ['', Validators.required],
+    age: [null, Validators.required]
   })
-  loading : boolean = false;
-  results : ListResult;
+
 
   //#endregion
 
   constructor() { }
 
-  async ngOnInit() {
-    // const folder = 'PhotosPerfil';
-    // const res = await this.storageService.listAll(folder);
-    // console.log('res ->', res);
-  }
+  ngOnInit() { }
 
+  /**
+   * Obtiene más archivos desde Firestore Storage.
+   */
   async getMoreFiles(){
     console.log('getMoreFiles');
-    const path = 'PhotosPerfil';
-    let pageToken = null;
-    if (this.results) {
-      if (!this.results.nextPageToken) {
-        return;
-
-      }
-      pageToken = this.results.nextPageToken;
-
-    }
-    const res = await this.storageService.list(path, 1, pageToken);
-    // if (this.results) {
-    //   res.items.unshift(...this.results.items);
-    //   res.prefixes.unshift(...this.results.prefixes)
-
-    // }
-    this.results = res;
+    const path = Models.Firebase.PathPhotosPerfil;
+    let pageToken = this.results?.nextPageToken || null;
+    if(!pageToken) return;
+    this.results = await this.storageService.list(path, 1, pageToken);
     console.log('this.results ->', this.results)
   }
 
-  descargar(item : string = ''){
-
-  }
+  /**
+   * Registra un nuevo usuario en Firebase Authentication y almacena su información en Firestore.
+   */
   async registrarse(){
-    this.loading = true;
-    console.log('datosForm ->', this.datosForm);
-    if(this.datosForm.valid){
+    // this.loading = true;
+    if(!this.datosForm.valid){
+      this.interactionsService.showAlert(this.interactionsService.titleImportante, this.interactionsService.mensajeEmptyFields);
+      return;
+    }
+    await this.interactionsService.showLoading('Procesando...');
+    try{
       const data = this.datosForm.value;
-      console.log('valid ->', data);
-      try{
-        const res = await this.authenticationService.createUser(data.email, data.password);
-        // console.log('user ->', user);
-        //guardar foto
-        data.photo = await this.subirFoto(res.user.uid);
-        let profile: Models.Auth.UpdateProfileI = {
-          displayName : data.name,
-          photoURL : data.photo
-        };
-        await this.authenticationService.updateProfile(profile);
+      const res = await this.authenticationService.createUser(data.email, data.password);
+      data.photo = data.photo.includes('http')? data.photo : await this.subirFoto(res.user.uid, this.file)
+      let profile: Models.Auth.UpdateProfileI = {
+        displayName : data.name,
+        photoURL : data.photo
+      };
+      await this.authenticationService.updateProfile(profile);
 
+      const datosUser : Models.Auth.UserProfile = {
+        name: data.name,
+        photo: data.photo,
+        age: data.age,
+        id: res.user.uid,
+        email: data.email,
+        roles:{ client: true}
+      }
+      // console.log('datosUser ->', datosUser);
+      await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, res.user.uid);
+      this.interactionsService.dismissLoading();
+      this.interactionsService.showToast('Usuario creado con exito')
+      this.router.navigate(['/auth/profile']);
 
-        //
-        const datosUser : Models.Auth.UserProfile = {
-          name: data.name,
-          photo: data.photo,
-          age: data.age,
-          id: res.user.uid,
-          email: data.email,
-          roles:{ client: true}
-        }
-        console.log('datosUser ->', datosUser);
-        await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, res.user.uid);
-        console.log('usuario creado con exito');
-        this.router.navigate(['/auth/login']);
-
-      }catch(e){ console.log('registrarse error ->', e)}
+    }catch(e){
+      console.log('registrarse error ->', e)
+      this.interactionsService.dismissLoading();
+      this.interactionsService.showAlert('Error', this.interactionsService.mensajeError)
     }
 
-  }
-
-  async subirFoto(uid : string){
-   if (this.file) {
-
-    const snap = await this.storageService.uploadFile(`PhotosPerfil/${uid}`, this.file.name, this.file);
-    console.log('snap -> ', snap);
-    // const url = await this.storageService.getDownloadUrl(snap.ref.fullPath)
-
-    return snap.ref.fullPath;
-
-
-   }
-   return '';
 
   }
 
-  async uploadFile(input : HTMLInputElement){
+  /**
+ * Sube la foto de perfil del usuario al almacenamiento y devuelve la ruta del archivo.
+ * @param uid - Identificador del usuario.
+ * @returns Ruta del archivo subido.
+ */
+  async subirFoto(uid : string, file : File){
+      const path = Models.Firebase.PathPhotosPerfil;
+      const snap = await this.storageService.uploadFile(`${path}/${uid}`, file.name, file);
+      return snap.ref.fullPath;
+
+  }
+
+  async subirArchivoConProgreso(input : HTMLInputElement){
     if (input.files.length) {
       const files = input.files;
       console.log('files -> ', files);
@@ -169,56 +158,31 @@ export class RegisterComponent  implements OnInit {
     }
   }
 
-  async viewPreview(input : HTMLInputElement){
-    if (input.files.length) {
-      const files = input.files;
-      console.log('viewPreview files -> ', files);
-      this.file = files.item(0);
-      // this.datosForm.controls['photo'].value = files.item(0)
-      // this.form.controls['dept'].value = selected.id;
-
-      // this.image = URL.createObjectURL(files.item(0));
-      // this.image = await this.storageService.fileToBase64(files.item(0));
-
-      console.log('this.image ->' , this.image)
-
-    }
+ /**
+   * Muestra una vista previa de la imagen seleccionada por el usuario.
+   * @param files - Elemento de entrada de tipo archivo.
+   */
+ async viewPreview({ files } : HTMLInputElement){
+  //files es un elemento desestructurado. por eso esta entre
+  if (files.length) {
+    this.file = files.item(0);
+    const img: any = files.item(0)
+      this.datosForm.controls.photo.setValue(img);
 
   }
 
-  view (file : File){
-    const url = this.storageService.fileToURL(file);
-    Browser.open({url})
-  }
+}
 
+
+  /**
+ * Descarga un archivo desde Firestore Storage.
+ * @param path - Ruta del archivo en el almacenamiento.
+ */
   download(path: string) {
     this.storageService.downloadFile(path)
   }
 
-  async save(){
-    const folder = 'PhotosPerfil';
-    //subir y esperar una promesa
-    console.log('guardando...');
-    const snap = await this.storageService.uploadFile(folder, this.file.name, this.file);
-    console.log('snap ->', snap);
-    const url = await this.storageService.getDownloadUrl(snap.ref.fullPath);
-    console.log('url ->', url);
-    console.log('guardado con exito')
 
-  }
 
-//   async uploadFile(input: HTMLInputElement) {
-//     if (!input.files) return
-
-//     const files: FileList = input.files;
-
-//     for (let i = 0; i < files.length; i++) {
-//         const file = files.item(i);
-//         if (file) {
-//             const storageRef = ref(this.storage, file.name);
-//             uploadBytesResumable(storageRef, file);
-//         }
-//     }
-// }
 
 }

@@ -1,6 +1,9 @@
 import { WhereFilterOp } from "firebase/firestore"
 
 export namespace ModelsFirebase{
+  export const PathUsers = 'Users';
+  export const PathIntentsLogin = 'intentsLogin';
+  export const PathPhotosPerfil = 'PhotosPerfil'
   export interface extrasQuery {
     limit?: number,
     orderParam?: string,
