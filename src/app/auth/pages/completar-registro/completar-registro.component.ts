@@ -84,7 +84,7 @@ export class CompletarRegistroComponent  implements OnInit {
 
       console.log('valid ->', data);
       try {
-        let profile: Models.Auth.UPdatePforileI = {
+        let profile: Models.Auth.UpdateProfileI = {
           displayName: data.name,
           photoURL: data.photo
         }

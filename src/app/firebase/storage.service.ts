@@ -27,7 +27,7 @@ export class StorageService {
 
    }
 
- 
+
 
 
 
@@ -133,7 +133,7 @@ export class StorageService {
     // link.remove();
 
     // 2.- usando un servio
-    this.fileSaverService.save(blob, storageRef.name);
+    await this.fileSaverService.save(blob, storageRef.name);
   }
 
   fileToBase64(file : File){

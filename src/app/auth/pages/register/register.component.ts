@@ -87,7 +87,7 @@ export class RegisterComponent  implements OnInit {
         // console.log('user ->', user);
         //guardar foto
         data.photo = await this.subirFoto(res.user.uid);
-        let profile: Models.Auth.UPdatePforileI = {
+        let profile: Models.Auth.UpdateProfileI = {
           displayName : data.name,
           photoURL : data.photo
         };

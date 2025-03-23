@@ -26,7 +26,7 @@ export namespace ModelsAuth{
   }
 
 
-  export interface UPdatePforileI{
+  export interface UpdateProfileI{
     displayName? : string;
     photoURL? : string
 

@@ -121,6 +121,10 @@ export class ProfileComponent  implements OnInit {
     this.modalEditInfo.isOpen = true;
   }
 
+    /**
+   * Selecciona la opción del modal y asigna el título correspondiente.
+   * @param input elemento input type file que recibe la imagen. este se guarda en una variable tipo file para poder ser mostrada en pantalla
+   */
   async viewPreview(input : HTMLInputElement){
     console.log('input ->', input)
     if (input.files.length) {
@@ -130,14 +134,21 @@ export class ProfileComponent  implements OnInit {
     }
 
   }
-
+  /**
+   * Para cerrar sesion
+   */
   salir(){
     this.authenticationService.logout();
     this.user = null;
 
   }
 
+  /**
+ * Actualiza el correo del usuario y envía un enlace de verificación.
+ */
   async actualizarEmail(){
+    if(!this.formNewEmail.valid){return; }
+
     let user = this.authenticationService.getCurrentUser();
 
     if(this.formNewEmail.valid){
@@ -145,15 +156,12 @@ export class ProfileComponent  implements OnInit {
       console.log('valid ->', data);
       try {
         await this.interactionsService.showLoading("Enviando enlaace de verificacion...");
-        // await this.authenticationService.login(user.email, data.password);
-        // await this.authenticationService.reauthenticateWithCredential(data.password);
         await this.authenticationService.verifyBeforeUpdateEmail(data.email);
         this.interactionsService.dismissLoading();
         await this.interactionsService.showAlert('Importante',
           `Te hemos enviado un correo a <strong>${data.email}</strong> para que puedas verificar tu nuevo correo.
            Verifícalo e inicia sesion con el nuevo correo, caso contrario inicia sesion con tu correo de siempre.`
         )
-        // await this.authenticationService.updateEmail(data.email);
         await this.authenticationService.logout();
         this.modalEditInfo.isOpen = false;
         setTimeout(() => {
@@ -189,21 +197,28 @@ export class ProfileComponent  implements OnInit {
   }
 
 
-  ngOnInit() {
-    console.log('userProfile ->', this.userProfile)
-    // console.log('userProfile ->', this.userService.)
+  ngOnInit() {}
 
+   /**
+ * Descarga la foto o archivo en cuestion al dispositvo actual
+ */
+  async descargarFoto(){
+    try {
+       await this.storageService.downloadFile(this.userProfile.photo);
+       this.interactionsService.showToast('Imagen descargada con éxito')
+
+    } catch (error) {
+      this.interactionsService.showAlert('Importante','Esta Imagen no se encuentra en nuestros registros, por lo que no es posible descargarse')
+
+    }
   }
 
-  descargarFoto(){
-    this.storageService.downloadFile(this.userProfile.photo);
 
-  }
-
-
-
+/**
+ * Actualiza el perfil del usuario cambiando su nombre y foto de perfil.
+ */
   async actualizarPerfil(){
-    let data : Models.Auth.UPdatePforileI = {};
+    let data : Models.Auth.UpdateProfileI = {};
     if(this.newName){
       data.displayName = this.newName;
     }
@@ -229,11 +244,12 @@ export class ProfileComponent  implements OnInit {
 
   }
 
+
   async downloadProfilePicture(){
     console.log(this.userProfile.photo)
     try {
       await this.storageService.downloadFile(this.userProfile.photo);
-      this.interactionsService.showToast('Imagen descargada con éxito')
+      // this.interactionsService.showToast('Imagen descargada con éxito')
       console.log('imagend escargada con exito')
 
     } catch (error) {
@@ -243,6 +259,9 @@ export class ProfileComponent  implements OnInit {
 
   }
 
+  /**
+   * Actualiza la foto del usuario
+   */
   async editarProfilePicture(){
     console.log('subiendo...')
     await this.interactionsService.showLoading('subiendo...');
@@ -262,6 +281,9 @@ export class ProfileComponent  implements OnInit {
 
   }
 
+  /**
+   * envia un correo al usuario para verificar su correo electronico
+   */
   async enviarCorreo(){
     this.interactionsService.showLoading("Enviando correo...");
     await this.authenticationService.sendEmailVerification();
@@ -271,6 +293,9 @@ export class ProfileComponent  implements OnInit {
     console.log('correo enviado -> comprueba tu correo',);
   }
 
+/**
+ * actualiza la edad del usuario despues de validar formulario
+ */
   async actualizarEdad(){
     const user = this.authenticationService.getCurrentUser();
     const path = `${Models.Auth.PathUsers}/${user.uid}`;
@@ -282,7 +307,9 @@ export class ProfileComponent  implements OnInit {
   }
 
 
-
+  /**
+   *  actualiza la contraseña del usuario después de validar el formulario.
+   */
   async cambiarPassword(){
     console.log('this.formCambiarPassword ->', this.formCambiarPassword)
     if(this.formCambiarPassword.valid){
@@ -303,25 +330,10 @@ export class ProfileComponent  implements OnInit {
 
   }
 
-  // hideButton() {
-  //   // Esperamos un poco para verificar si el foco pasó al botón
-  //   setTimeout(() => {
-  //     const activeElement = document.activeElement as HTMLElement;
-  //     if (activeElement.tagName !== 'BUTTON') {
-  //       this.showButton = false;
-  //     }
-  //   }, 100);
-  // }
 
-  // isEqual(input: FormControl){
-  //   console.log('input ->', input.value)
-  //   if(this.formCambiarPassword?.value?.newPassword != input?.value ){
-  //     return {notSame: true}
-  //   }
-  //   else
-  //     return {notSame: false}
-  // }
-
+/**
+ * Elimina la cuenta del usuario después de confirmar su decisión.
+ */
   async eliminarCuenta(){
     //preguntar al usuario si esta seguro de eliminar la cuenta
     const responseAlert = await this.interactionsService.showAlert("Importante",
@@ -332,7 +344,6 @@ export class ProfileComponent  implements OnInit {
         await this.interactionsService.showLoading('Eliminando...');
 
         const user = this.authenticationService.getCurrentUser();
-        // await this.authenticationService.reauthenticateWithCredential(data.password);
         // / si falla al actualizar la contraseña entonces no podrá eliminar la cuenta
         // debe tener un inicio de sesión reciente
         await this.authenticationService.updatePassword('xxxxxx');
