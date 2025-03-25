@@ -122,16 +122,37 @@ export const isRolClaim = (roles: Models.Auth.Rol[], path: string = '/home') : C
     if (user) {
         const tokenResult = await user.getIdTokenResult(true);
         const claims: any = tokenResult.claims;
+        const userProfile = await userService.getUserProfile(user.uid);
+        console.log(userProfile)
+        console.log('claims', claims)
+        //usando claims
         if (claims.roles) {
           roles.every( rol => {
+
             if (claims.roles[rol] == true) {
               valid = true;
               return false;
             }
+
             return true;
           });
 
         }
+
+        //usando el perfil de usuario de firestore
+        if(userProfile.roles){
+          roles.every( rol => {
+
+            if (userProfile.roles[rol] == true) {
+              valid = true;
+              return false;
+            }
+
+            return true;
+          });
+
+        }
+
     }
     if (!valid) {
         router.navigate([path])

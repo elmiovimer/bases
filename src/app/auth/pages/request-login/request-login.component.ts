@@ -4,8 +4,7 @@ import { AuthenticationService } from 'src/app/firebase/authentication.service';
 import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Models } from 'src/app/models/models';
 import { UserService } from 'src/app/services/user.service';
-import { environment } from 'src/environments/environment';
-import { GoogleAuthProvider, OAuthProvider } from '@angular/fire/auth';
+import {  OAuthProvider } from '@angular/fire/auth';
 import { InteractionsService } from 'src/app/services/interactions.service';
 
 @Component({
@@ -15,18 +14,18 @@ import { InteractionsService } from 'src/app/services/interactions.service';
   standalone: false
 })
 export class RequestLoginComponent  implements OnInit {
+
   private authenticationService: AuthenticationService = inject(AuthenticationService);
   private firestoreService: FirestoreService = inject(FirestoreService);
-  userService: UserService = inject(UserService);
+  // private userService: UserService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private interactionServices : InteractionsService = inject(InteractionsService);
 
-  // message : string = 'procesando...';
 
   constructor() {
 
-    console.log('en request - login')
+    console.log('RequestLoginComponent inicializado')
     this.getQueryParams();
     this.getTokenOfProvider();
 
@@ -36,9 +35,12 @@ export class RequestLoginComponent  implements OnInit {
 
   ngOnInit() {}
 
+  /**
+   * Obtiene los parámetros de la URL para manejar el flujo de autenticación con proveedores externos.
+   */
   async getQueryParams() {
     const queryParams: any = this.route.snapshot.queryParams;
-    console.log('queryParams -> ', queryParams);
+    console.log('parametros de consulta(queryparams) -> ', queryParams);
     if (queryParams.provider && queryParams.intentId) {
       const provider = queryParams.provider;
       await this.interactionServices.showLoading('Procesando...')
@@ -48,40 +50,46 @@ export class RequestLoginComponent  implements OnInit {
 
   }
 
+  /**
+   * Obtiene el token de autenticación de un proveedor tras una redirección.
+   */
   async getTokenOfProvider() {
     await this.interactionServices.showLoading('Redirigiendo...')
       const result =  await this.authenticationService.getRedirectResult();
       console.log('getRedirectResult -> ', result);
+
       if (result) {
-        // this.message = 'redirigiendo...'
         const credential = OAuthProvider.credentialFromResult(result)
-        console.log('credential -> ', credential);
-        const token = credential.idToken ? credential.idToken : credential.accessToken;
+        const token = credential.idToken || credential.accessToken;
         this.saveToken(token);
       }
   }
+  /**
+   * Obtiene el token de autenticación desde un popup y lo guarda.
+   * @param result Resultado de autenticación obtenido desde el popup.
+   */
   async getTokenOfProviderbyPopup(result? : any) {
 
-      console.log('getRedirectResult -> ', result);
+      console.log('Resultado del popup:', result);
       if (result) {
-        // this.message = 'redirigiendo...'
         const credential = OAuthProvider.credentialFromResult(result)
-        console.log('credential -> ', credential);
         const token = credential.idToken ? credential.idToken : credential.accessToken;
-        this.saveToken(token);
+        if (token) this.saveToken(token);
       }else{
         this.interactionServices.dismissLoading()
       }
   }
 
+  /**
+   * Guarda el token de autenticación en Firestore y cierra la sesión.
+   * @param token Token de autenticación a guardar.
+   */
   async saveToken (token : string){
     const queryParams : any = this.route.snapshot.queryParams;
     const intentId = queryParams.intentId;
-    console.log('intentId ->', intentId);
-    console.log('token ->', token);
     if (intentId) {
       const path = Models.Auth.PathIntentsLogin;
-      const dataUpdate = {token};
+      const dataUpdate = { token };
       await this.firestoreService.updateDocument(`${path}/${intentId}`, dataUpdate);
       this.authenticationService.logout();
       console.log('token guardado con exito')
