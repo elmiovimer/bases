@@ -131,34 +131,6 @@ export class UserDetailComponent  implements OnInit {
     }
   }
 
-  // async setClaim(){
-  //   // const response = await this.functionsService.call<any, any>('appCall');
-  //   // console.log(response);
 
-  //   const roles : any = {};
-  //   this.rolesUser.forEach( item =>{
-  //     if (item.enable) {
-  //       roles[item.rol] = true
-
-  //     }
-  //   });
-  //   const updateDoc = {roles}
-  //   console.log('updateDoc ->', updateDoc);
-  //   const request : Models.Functions.RequestSetRol = {
-  //     roles,
-  //     uid: this.user.id
-  //   }
-  //   const response = await this.functionsService.call<any, any>('setClaim', request);
-  //   console.log('response', response)
-
-  // }
-  /**
-   * Llama a una función de prueba en la nube para verificar la conectividad.
-   */
-  // async helloWorld(){
-  //   const url = 'http://127.0.0.1:5001/basesfire-devserv/us-central1';
-  //   const res = await this.webService.request<any>('POST', url, 'helloWorld');
-  //   console.log("helloworkd -> ",res)
-  // }
 
 }
